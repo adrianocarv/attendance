@@ -1,4 +1,4 @@
-package hello;
+package com.attendance.backend.model;
 
 import java.sql.Date;
 
