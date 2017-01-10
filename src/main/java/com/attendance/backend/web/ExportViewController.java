@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,9 +28,15 @@ public class ExportViewController {
 	@Autowired
 	DropboxRepository dropboxRepository;
 
+	@Value("${dropbox.accessToken}")
+	private String ACCESS_TOKEN;
+	
 	@RequestMapping("/export-view")
 	@ResponseBody
 	public String exportView(String name) throws Exception {
+		
+		System.out.println("\n\n============================================================================================================");
+		System.out.println("================== ACCESS_TOKEN: " + ACCESS_TOKEN);
 		
 		Iterable<OutputView> outputViews = null;
 		if(name == null)

@@ -3,6 +3,7 @@ package com.attendance.backend.repository;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import com.attendance.backend.model.OutputView;
@@ -13,13 +14,13 @@ import com.dropbox.core.v2.files.WriteMode;
 @Repository
 public class DropboxRepository {
 
-	//@Value("${dropbox.accessToken}")
-	//private String ACCESS_TOKEN;
-	private String ACCESS_TOKEN = "FSRJVa8x0EIAAAAAAAE_Z919a-Tw2oftUJQFedto2vZ1phmFsOWyRoj3FN_CVdAj";
+	@Value("${dropbox.accessToken}")
+	private String ACCESS_TOKEN;
+	//private String ACCESS_TOKEN = "FSRJVa8x0EIAAAAAAAE_Z919a-Tw2oftUJQFedto2vZ1phmFsOWyRoj3FN_CVdAj";
 
-	//@Value("${dropbox.rootPath}")
-	//private String ROOT_PATH;
-	private String ROOT_PATH = "/Apps/Attendance";
+	@Value("${dropbox.rootPath}")
+	private String ROOT_PATH;
+	//private String ROOT_PATH = "/Apps/Attendance";
 	
 	public void uploadOutputView(OutputView outputView) throws Exception {
 
