@@ -1,18 +1,14 @@
 package com.attendance.backend.web;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.attendance.backend.model.OutputView;
+import com.attendance.backend.repository.DatabaseSchemaRepository;
 import com.attendance.backend.repository.DropboxRepository;
 import com.attendance.backend.repository.OutputViewRepository;
 
@@ -23,21 +19,14 @@ public class ExportViewController {
 	private OutputViewRepository outputViewRepository;
 
 	@Autowired
-	JdbcTemplate jdbcTemplate;
+	DatabaseSchemaRepository databaseSchemaRepository;
 
 	@Autowired
 	DropboxRepository dropboxRepository;
 
-	@Value("${dropbox.accessToken}")
-	private String ACCESS_TOKEN;
-	
 	@RequestMapping("/export-view")
 	@ResponseBody
 	public String exportView(String name) throws Exception {
-		
-		System.out.println("\n\n============================================================================================================");
-		System.out.println("================== ACCESS_TOKEN: " + ACCESS_TOKEN);
-		
 		Iterable<OutputView> outputViews = null;
 		if(name == null)
 			outputViews = outputViewRepository.findAll();
@@ -45,8 +34,8 @@ public class ExportViewController {
 			outputViews = outputViewRepository.findByName(name);
 
 		for(OutputView outputView : outputViews){
-			outputView.setHeaderColumns(this.getViewHeaderColumns(outputView.getName()));
-			outputView.setDbData(this.getViewRows(outputView.getName()));
+			outputView.setHeaderColumns(databaseSchemaRepository.getViewHeaderColumns(outputView.getName()));
+			outputView.setDbData(databaseSchemaRepository.getViewRows(outputView.getName()));
 			
 			dropboxRepository.uploadOutputView(outputView);
 
@@ -82,22 +71,5 @@ public class ExportViewController {
 		outputViewStatus += "</table>";
 		
 		return outputViewStatus;
-	}
-	
-	private String[] getViewHeaderColumns(String name) {
-
-		List<Map<String, Object>> schema = jdbcTemplate.queryForList("SELECT * FROM information_schema.columns WHERE table_name = '" + name + "'");
-		List<String> columns = new ArrayList<String>();
-		for (Map<String, Object> m : schema)
-			columns.add(m.get("COLUMN_NAME") + "");
-
-		return columns.toArray(new String[0]);
-	}
-
-	private List<Map<String, Object>> getViewRows(String viewName){
-
-		List<Map<String, Object>> rows = jdbcTemplate.queryForList("select * from " + viewName);
-
-		return rows;
 	}
 }

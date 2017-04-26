@@ -1,4 +1,4 @@
-package com.attendance.backend.web;
+package com.attendance.backend.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.attendance.backend.web.ExportViewController;
+
 @Component
 public class ScheduledTasks {
 
@@ -18,7 +20,7 @@ public class ScheduledTasks {
 	@Autowired
 	private ExportViewController exportViewController;
     
-    @Scheduled(fixedRate = 60000)
+    //@Scheduled(fixedRate = 60000)
     public void exportViewScheduled() throws Exception {
         log.info("exportViewScheduled {}", dateFormat.format(new Date()));
     	exportViewController.exportView(null);

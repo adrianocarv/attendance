@@ -6,10 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.lang3.StringUtils;
@@ -18,22 +17,14 @@ import com.attendance.backend.util.AttendanceException;
 import com.attendance.backend.util.FileFormatUtil;
 
 @Entity
-@Table(name = "output_view")
 public class OutputView {
 
-	@Id
-	private String name;
-	
-	@Column(name="format_excel",nullable=false)
+    private @Id @GeneratedValue Long id;
+
+    private String name;
 	private boolean formatExcel;
-
-	@Column(name="format_csv",nullable=false)
 	private boolean formatCSV;
-
-	@Column(name="execution_time")
 	private Timestamp executionTime;
-
-	@Column(name="execution_status")
 	private String executionStatus;
 
 	@Transient
@@ -112,6 +103,14 @@ public class OutputView {
 	}
 
 	//Getts
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -152,19 +151,19 @@ public class OutputView {
 		this.executionStatus = executionStatus;
 	}
 
-	public List<Map<String, Object>> getDbData() {
-		return dbData;
-	}
-
-	public void setDbData(List<Map<String, Object>> dbData) {
-		this.dbData = dbData;
-	}
-
 	public String[] getHeaderColumns() {
 		return headerColumns;
 	}
 
 	public void setHeaderColumns(String[] headerColumns) {
 		this.headerColumns = headerColumns;
+	}
+
+	public List<Map<String, Object>> getDbData() {
+		return dbData;
+	}
+
+	public void setDbData(List<Map<String, Object>> dbData) {
+		this.dbData = dbData;
 	}
 }
