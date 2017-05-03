@@ -37,6 +37,11 @@ public class Person {
 		this.name = name;
 	}
 
+	public Person(String name, Center center) {
+		this.name = name;
+		this.center = center;
+	}
+
 	public Long getId() {
 		return id;
 	}

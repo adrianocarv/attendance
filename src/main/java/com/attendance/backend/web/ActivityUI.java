@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.attendance.backend.model.Activity;
 import com.attendance.backend.repository.ActivityRepository;
-import com.vaadin.server.FontAwesome;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Button;
@@ -25,7 +25,7 @@ public class ActivityUI  extends VerticalLayout {
 
 	//Main components
 	private Label title = new Label("Atividades");
-	private Button addNewBtn = new Button("Nova atividade", FontAwesome.PLUS);
+	private Button addNewBtn = new Button("Nova atividade", VaadinIcons.PLUS);
 	private Grid<Activity> grid = new Grid<>(Activity.class);
 	private HorizontalLayout topComponents = new HorizontalLayout(title, addNewBtn);
 
