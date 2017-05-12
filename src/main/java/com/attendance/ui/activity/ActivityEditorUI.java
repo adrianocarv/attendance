@@ -1,4 +1,4 @@
-package com.attendance.backend.web;
+package com.attendance.ui.activity;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -64,7 +64,7 @@ public class ActivityEditorUI extends VerticalLayout {
 		binder.bindInstanceFields(this);
 
 		// Configure and style components
-		setSpacing(true);
+		//setSpacing(true);
 		actions.setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
 		save.setStyleName(ValoTheme.BUTTON_ICON_ALIGN_RIGHT);
 		save.setStyleName(ValoTheme.BUTTON_PRIMARY);

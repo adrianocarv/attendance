@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.attendance.backend.web.ExportViewController;
+import com.attendance.ui.exportview.ExportViewController;
 
 @Component
 public class ScheduledTasks {
