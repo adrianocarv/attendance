@@ -4,9 +4,9 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.attendance.backend</groupId>
-    <artifactId>attendance-backend</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <groupId>com.attendance</groupId>
+    <artifactId>attendance</artifactId>
+    <version>1.0.0-RC-01</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -15,7 +15,9 @@
     </parent>
 
     <properties>
-        <java.version>1.8</java.version>
+		<java.version>1.8</java.version>
+		<timestamp>${maven.build.timestamp}</timestamp>
+		<maven.build.timestamp.format>dd/MM/yyyy HH:mm</maven.build.timestamp.format>
     </properties>
 
 	<dependencies>
@@ -28,14 +30,7 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-<!-- 
-		<dependency>
-		    <groupId>org.springframework.boot</groupId>
-		    <artifactId>spring-boot-devtools</artifactId>
-		    <optional>true</optional>
-		</dependency>
- -->
-         <dependency>
+	         <dependency>
         	<groupId>org.springframework.integration</groupId>
         	<artifactId>spring-integration-http</artifactId>
         </dependency>
@@ -89,7 +84,16 @@
     <!-- end::bom[] -->
     
     <build>
-        <plugins>
+	    <resources>
+	        <resource>
+	            <filtering>true</filtering>
+	            <directory>src/main/resources</directory>
+	            <includes>
+	                <include>application.properties</include>
+	            </includes>
+	        </resource>
+	    </resources>
+		<plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -121,5 +125,5 @@
             <url>https://repo.spring.io/libs-release</url>
         </pluginRepository>
     </pluginRepositories>
-
+    
 </project>

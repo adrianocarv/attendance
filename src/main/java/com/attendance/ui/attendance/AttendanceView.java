@@ -20,7 +20,7 @@ public class AttendanceView extends CssLayout implements View {
 
     public static final String VIEW_NAME = "Presenças";
 
-    /** Dependences */
+	/** Dependences */
     @Autowired private ActivityRepository activityRepository;
     private final AttendanceLayout attendanceLayout;
 

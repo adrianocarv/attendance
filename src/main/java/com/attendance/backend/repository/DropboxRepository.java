@@ -16,11 +16,9 @@ public class DropboxRepository {
 
 	@Value("${dropbox.accessToken}")
 	private String ACCESS_TOKEN;
-	//private String ACCESS_TOKEN = "FSRJVa8x0EIAAAAAAAE_Z919a-Tw2oftUJQFedto2vZ1phmFsOWyRoj3FN_CVdAj";
 
 	@Value("${dropbox.rootPath}")
 	private String ROOT_PATH;
-	//private String ROOT_PATH = "/Apps/Attendance";
 	
 	public void uploadOutputView(OutputView outputView) throws Exception {
 

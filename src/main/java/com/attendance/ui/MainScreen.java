@@ -2,10 +2,9 @@ package com.attendance.ui;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.attendance.ui.about.AboutView;
 import com.attendance.ui.activity.ActivityView;
 import com.attendance.ui.attendance.AttendanceView;
-import com.attendance.ui.crud.AboutView;
-import com.attendance.ui.crud.SampleCrudView;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.ViewChangeListener;
@@ -29,6 +28,7 @@ public class MainScreen extends HorizontalLayout {
 
 	@Autowired private AttendanceView attendanceView;
 	@Autowired private ActivityView activityView;
+	@Autowired private AboutView aboutView;
 
 	public MainScreen() {
         setSpacing(false);
@@ -45,8 +45,7 @@ public class MainScreen extends HorizontalLayout {
         menu = new Menu(navigator);
         menu.addView(attendanceView, AttendanceView.VIEW_NAME, AttendanceView.VIEW_NAME, VaadinIcons.CHECK_SQUARE_O);
         menu.addView(activityView, ActivityView.VIEW_NAME, ActivityView.VIEW_NAME, VaadinIcons.CALENDAR_USER);
-        menu.addView(new SampleCrudView(), SampleCrudView.VIEW_NAME, SampleCrudView.VIEW_NAME, VaadinIcons.EDIT);
-        menu.addView(new AboutView(), AboutView.VIEW_NAME, AboutView.VIEW_NAME, VaadinIcons.INFO_CIRCLE);
+        menu.addView(aboutView, AboutView.VIEW_NAME, AboutView.VIEW_NAME, VaadinIcons.INFO_CIRCLE);
 
         navigator.addViewChangeListener(viewChangeListener);
 
