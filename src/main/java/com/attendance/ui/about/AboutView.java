@@ -25,21 +25,12 @@ public class AboutView extends VerticalLayout implements View {
 	public static final String VIEW_NAME = "Sobre";
 
 	/** Dependences */
-	@Value("${application.name}")
-	private String applicationName;
-
 	@Value("${build.version}")
 	private String buildVersion;
 
 	@Value("${build.timestamp}")
 	private String buildTimestamp;
 
-	@Autowired
-	Environment env;
-	
-	@Value("${profile.name}")
-	private String profileName;
-	
 	/** Components */
 	private Label labelAttendanceInfo = new Label();
 	
@@ -73,7 +64,7 @@ public class AboutView extends VerticalLayout implements View {
 
 	@Override
     public void enter(ViewChangeEvent event) {
-        String attendanceInfo = VaadinIcons.INFO_CIRCLE.getHtml() + " Versão: " + buildVersion + " - " + buildTimestamp + " (" + env.getDefaultProfiles() + ")";
+        String attendanceInfo = VaadinIcons.INFO_CIRCLE.getHtml() + " Versão: " + buildVersion + " - " + buildTimestamp;
         labelAttendanceInfo.setValue(attendanceInfo);
         labelAttendanceInfo.setContentMode(ContentMode.HTML);
     }
