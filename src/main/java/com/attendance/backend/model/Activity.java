@@ -4,23 +4,43 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 public class Activity {
 
     private @Id @GeneratedValue Long id;
-	private String name;
-	private String nameComplement;
-	private String description;
-	private @ManyToOne Center center;
 
-	protected Activity() {
+    @NotNull
+    @Size(min = 3, message = "Atividade deve ter pelo menos três caracteres")
+    private String name;
+	
+    private String nameComplement;
+	
+    private String description;
+	
+    private @ManyToOne Center center;
+
+	private @Transient Integer totalAttendance = 0;
+    
+    protected Activity() {
 	}
 
 	public Activity(Long id) {
 		this.id = id;
 	}
 
+	public Integer getTotalAttendance() {
+		return totalAttendance;
+	}
+
+	public void setTotalAttendance(Integer totalAttendance) {
+		this.totalAttendance = totalAttendance;
+	}
+
+	//accessors
 	public Long getId() {
 		return id;
 	}

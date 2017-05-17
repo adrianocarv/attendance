@@ -14,4 +14,8 @@ public interface AttendanceRepository extends CrudRepository<Attendance, Long> {
 	List<Attendance> findByDateAndActivity(Date date, Activity activity);
 
 	List<Attendance> findByDateAndActivityAndPerson(Date date, Activity activity, Person person);
+	
+	List<Attendance> findByActivity(Activity activity);
+
+	List<Attendance> findByPerson(Person person);
 }

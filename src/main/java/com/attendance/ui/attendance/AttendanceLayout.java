@@ -1,6 +1,7 @@
 package com.attendance.ui.attendance;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,7 +108,7 @@ public class AttendanceLayout extends CssLayout {
 
 	private void hookLogicToComponents() {
 
-		buttonEvents.addClickListener(e -> attendanceActivityLayout.enter(this, currentActivity));
+		buttonEvents.addClickListener(e -> attendanceActivityLayout.enter(this));
 		
 		buttonSave.addClickListener(e -> {
 			editMode = false;
@@ -141,7 +142,7 @@ public class AttendanceLayout extends CssLayout {
     	this.parentView = parentView;
     	this.currentActivity = a;
 
-    	parentView.getGrid().setVisible(false);
+    	this.parentView.getVertical().setVisible(false);
     	setVisible(true);
     	
 		labelActivity.setValue(currentActivity.getName());
@@ -234,7 +235,7 @@ public class AttendanceLayout extends CssLayout {
 		return currentActivity;
 	}
 
-	public void addPerson(Person person) {
+	void addPerson(Person person) {
 		Attendance newAttendance = new Attendance(currentActivity, person, Date.valueOf(fieldDate.getValue()));
 		newAttendance.setPresent(true);
 
@@ -253,4 +254,10 @@ public class AttendanceLayout extends CssLayout {
 		updateGrid();
 		new Notification(null,"<b>" + person.getName() + "</b> adicionado na lista de presenças.", Notification.Type.HUMANIZED_MESSAGE, true).show(Page.getCurrent());
 	}
+	
+    void selectAttendanceActivity(LocalDate selectedDate) {
+		fieldDate.setValue(selectedDate);
+		editMode = false;
+    	this.refreshEditModeComponents();
+    }
 }

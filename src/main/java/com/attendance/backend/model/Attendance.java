@@ -33,9 +33,9 @@ public class Attendance {
 	}
 
 	public String getName(){
-		return person.getName();
+		return person.getDisplayName();
 	}
-
+	
 	@Override
 	public boolean equals(Object other) {
 		if(other == null || !(other instanceof Attendance) ) return false;

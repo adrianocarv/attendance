@@ -35,7 +35,7 @@ public class LoginScreen extends CssLayout {
         this.loginListener = loginListener;
         this.accessControl = accessControl;
         buildUI();
-        username.focus();
+        password.focus();
     }
 
     private void buildUI() {
@@ -69,9 +69,9 @@ public class LoginScreen extends CssLayout {
         loginForm.setSizeUndefined();
         loginForm.setMargin(false);
 
-        loginForm.addComponent(username = new TextField("Username", "admin"));
+        loginForm.addComponent(username = new TextField("Username", "ca"));
         username.setWidth(15, Unit.EM);
-        loginForm.addComponent(password = new PasswordField("Password"));
+        loginForm.addComponent(password = new PasswordField("Password", "5000"));
         password.setWidth(15, Unit.EM);
         password.setDescription("Write anything");
         CssLayout buttons = new CssLayout();
@@ -125,7 +125,7 @@ public class LoginScreen extends CssLayout {
             showNotification(new Notification("Login failed",
                     "Please check your username and password and try again.",
                     Notification.Type.HUMANIZED_MESSAGE));
-            username.focus();
+            password.focus();
         }
     }
 

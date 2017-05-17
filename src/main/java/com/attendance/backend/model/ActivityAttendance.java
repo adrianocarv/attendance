@@ -19,13 +19,9 @@ public class ActivityAttendance {
 		this.activity = activity;
 	}
 
-	public String getActivityTitle() {
-		return activity.getId() + ". " + activity.getName();
-	}
-
 	public String getAttendanceTitle() {
-		String strDate = date.toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy (E)"));
-		return strDate + " - " + totalPresent + " presentes";
+		String strDate = date.toLocalDate().format(DateTimeFormatter.ofPattern("E, dd/MM/yyyy"));
+		return strDate + " (" + totalPresent + ")";
 	}
 
 	//Gettes and settrs

@@ -11,6 +11,7 @@ import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
+import com.vaadin.ui.VerticalLayout;
 
 @SpringComponent
 @UIScope
@@ -26,6 +27,7 @@ public class AttendanceView extends CssLayout implements View {
 
     /** Components */
 	private Grid<Activity> grid = new Grid<>(Activity.class);
+	private VerticalLayout vertical;
 	
 	@Autowired
 	public AttendanceView(AttendanceLayout attendanceLayout) {
@@ -40,13 +42,19 @@ public class AttendanceView extends CssLayout implements View {
         setSizeFull();
         addStyleName("crud-view");
 
-        addComponents(grid, attendanceLayout);
+    	vertical = new VerticalLayout(grid);
+    	vertical.setSizeFull();
+    	vertical.setMargin(true);
+    	vertical.setStyleName("form-layout");
+    	vertical.setExpandRatio(grid,  1);
+    	
+        addComponents(vertical, attendanceLayout);
 	}
 	
 	private void configureComponents() {
 		grid.setSizeFull();
 		grid.setColumns("name");
-		grid.getColumn("name").setCaption("Atividade").setResizable(false).setSortable(false);
+		grid.getColumn("name").setCaption("Atividades").setResizable(false).setSortable(false);
 		grid.setSelectionMode(SelectionMode.SINGLE);
 	}
 
@@ -60,13 +68,13 @@ public class AttendanceView extends CssLayout implements View {
 
     @Override
     public void enter(ViewChangeEvent event) {
-    	grid.setVisible(true);
+    	vertical.setVisible(true);
     	attendanceLayout.setVisible(false);
 
     	grid.setItems(activityRepository.findAll());
     }
 
-	public Grid<Activity> getGrid() {
-		return grid;
+	public VerticalLayout getVertical() {
+		return vertical;
 	}
 }

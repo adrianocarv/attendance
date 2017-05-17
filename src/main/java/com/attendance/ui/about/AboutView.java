@@ -1,8 +1,6 @@
 package com.attendance.ui.about;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;

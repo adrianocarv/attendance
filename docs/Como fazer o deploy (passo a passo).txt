@@ -1,53 +1,10 @@
-a) Na IDE Spring Tool Suite
+pronpt de comando: cmd
 
-1. Abrir o STS (C:\dev\Eclipse\sts-bundle\sts-3.8.3.RELEASE\STS.exe)
-2. Alternar o workspace para sts-bumerangue (C:\dev\Eclipse - workspaces\sts-bumerangue)
-3. Abrir o projeto Bumerangue (C:\GitHub\Bumerangue)
-4. Implementar as alterações necessárias
-5. Atualizar os valores da Versão em VersionEnum.java
-4. Rodar a Ant task 'deploy-producao-all' em build/build.xml
+cd\
+cd GitHub\attendance
+heroku
 
-
-b) No Servidor
-
-1. Abrir o PuTTY Portable (D:\Dropbox\Programas 2\@portable\PuTTYPortable\PuTTYPortable.exe)
-
-2. Abrir a sessão 'droplet - producao'
-
-3. Logar com user
-  adrianocarv / pass: a mesma
-
-4. Trabalha como super user
-  su
-  <colocar a senha navamente>
-
-5. Parar o Bumerangue
-  ps -ef | grep java
-
-6. Matar o processo rodando
-  kill -9 <process>
-
-7. Verificar se matou    
-  ps -ef | grep java
-
-8. Aplicar o deploy
-  cd /home/adrianocarv/bumerangue-deploy/
-  ./webapps.sh
-
-9. Subir o Bumerangue
-  cd /opt/apache-tomcat-7.0.42/bin/
-  ./startup.sh &
-
-10. Verificar se está no ar com a versão atualizada
-  bumerangue.adm.br
-
-11. Fechar o PuTTY Portable
-  exit
-  exit
-
-12.Verificar NOVAMENTE se o Bumerangue continua no ar
-  bumerangue.adm.br
- 
-c) No GitHub
-
-1. Commit da nova versão
+git add .
+git commit -m "Demo"
+git push heroku master
+heroku open

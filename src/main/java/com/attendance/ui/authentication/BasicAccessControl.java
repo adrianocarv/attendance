@@ -7,13 +7,16 @@ package com.attendance.ui.authentication;
  */
 public class BasicAccessControl implements AccessControl {
 
-    @Override
+	private static final long serialVersionUID = 1L;
+
+	@Override
     public boolean signIn(String username, String password) {
         if (username == null || username.isEmpty())
             return false;
 
         CurrentUser.set(username);
-        return true;
+        
+        return (username.equals("ca")) && "500".equals(password) ;
     }
 
     @Override

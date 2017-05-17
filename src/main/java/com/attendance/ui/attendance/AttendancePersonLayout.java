@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.attendance.backend.model.Center;
 import com.attendance.backend.model.Person;
+import com.attendance.backend.model.PersonStatus;
 import com.attendance.backend.repository.PersonRepository;
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.Page;
 import com.vaadin.shared.ui.ValueChangeMode;
@@ -80,6 +82,7 @@ public class AttendancePersonLayout extends CssLayout {
 		grid.getColumn("name").setCaption("Nome").setResizable(false).setSortable(false);
         
         buttonBack.setStyleName("cancel");
+        buttonBack.setClickShortcut(ShortcutAction.KeyCode.ESCAPE);
 	}
 
 	private void hookLogicToComponents() {
@@ -143,6 +146,7 @@ public class AttendancePersonLayout extends CssLayout {
 
 		//Save New Person
 		Person newPerson = new Person(name, center);
+		newPerson.setStatus(PersonStatus.NEW);
 		personRepository.save(newPerson);
 
 		new Notification(null,"<b>" + name + "</b> adicionado na base.", Notification.Type.HUMANIZED_MESSAGE, true).show(Page.getCurrent());

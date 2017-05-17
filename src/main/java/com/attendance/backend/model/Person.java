@@ -1,34 +1,72 @@
 package com.attendance.backend.model;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.Email;
+import org.springframework.util.StringUtils;
 
 @Entity
 public class Person {
 
     private @Id @GeneratedValue Long id;
-	private String name;
-	private String email;
-	private String phone;
-	private Date birthday;
-	private @ManyToOne Center center;
-	private String tag1;
-	private String tag2;
-	private String tag3;
-	private String tag4;
-	private String waGuest;
-	private String waEntered;
-	private String waStatus;
-	private String waComment;
+
+    @NotNull
+    @Size(min = 3, message = "Nome deve ter pelo menos três caracteres")
+    private String name;
+
+    private String shortName;
+
+    @Email
+    private String email;
+	
+    private String phone;
+	
+    private Date birthday;
+	
+    private @ManyToOne Center center;
+	
+    private String tag1;
+	
+    private String tag2;
+	
+    private String tag3;
+	
+    private String tag4;
+	
+    private PersonStatus status;
+
+    private boolean checkUniversitario;
+    private boolean checkColegial;
+    private boolean checkCooperador;
+    private Date checkCooperadorDate;
+    private boolean checkContribui;
+    private BigDecimal checkContribuiValue;
+
+    private boolean checkEstudanteWA;
+    private Date checkEstudanteWADate;
+    private boolean checkEstudanteMail;
+    private Date checkEstudanteMailDate;
+
+    private boolean checkProfissionalWA;
+    private Date checkProfissionalWADate;
+    private boolean checkProfissionalMail;
+    private Date checkProfissionalMailDate;
+
+    private @Transient Integer totalAttendance = 0;
 
 	protected Person() {
 	}
 
-	public Person(long id) {
+	public Person(Long id) {
 		this.id = id;
 	}
 
@@ -42,6 +80,19 @@ public class Person {
 		this.center = center;
 	}
 
+	public Integer getTotalAttendance() {
+		return totalAttendance;
+	}
+
+	public void setTotalAttendance(Integer totalAttendance) {
+		this.totalAttendance = totalAttendance;
+	}
+
+	public String getDisplayName() {
+		return StringUtils.isEmpty(shortName) ? name : shortName;
+	}
+
+	//accessors
 	public Long getId() {
 		return id;
 	}
@@ -114,43 +165,140 @@ public class Person {
 		this.tag4 = tag4;
 	}
 
-	public String getWaGuest() {
-		return waGuest;
-	}
-
-	public void setWaGuest(String waGuest) {
-		this.waGuest = waGuest;
-	}
-
-	public String getWaEntered() {
-		return waEntered;
-	}
-
-	public void setWaEntered(String waEntered) {
-		this.waEntered = waEntered;
-	}
-
-	public String getWaStatus() {
-		return waStatus;
-	}
-
-	public void setWaStatus(String waStatus) {
-		this.waStatus = waStatus;
-	}
-
-	public String getWaComment() {
-		return waComment;
-	}
-
-	public void setWaComment(String waComment) {
-		this.waComment = waComment;
-	}
-
 	public String getEmail() {
 		return email;
 	}
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getShortName() {
+		return shortName;
+	}
+
+	public void setShortName(String shortName) {
+		this.shortName = shortName;
+	}
+
+	public PersonStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(PersonStatus status) {
+		this.status = status;
+		this.name += " (NEW)"; 
+	}
+
+	public boolean isCheckUniversitario() {
+		return checkUniversitario;
+	}
+
+	public void setCheckUniversitario(boolean checkUniversitario) {
+		this.checkUniversitario = checkUniversitario;
+	}
+
+	public boolean isCheckColegial() {
+		return checkColegial;
+	}
+
+	public void setCheckColegial(boolean checkColegial) {
+		this.checkColegial = checkColegial;
+	}
+
+	public boolean isCheckCooperador() {
+		return checkCooperador;
+	}
+
+	public void setCheckCooperador(boolean checkCooperador) {
+		this.checkCooperador = checkCooperador;
+	}
+
+	public Date getCheckCooperadorDate() {
+		return checkCooperadorDate;
+	}
+
+	public void setCheckCooperadorDate(Date checkCooperadorDate) {
+		this.checkCooperadorDate = checkCooperadorDate;
+	}
+
+	public boolean isCheckContribui() {
+		return checkContribui;
+	}
+
+	public void setCheckContribui(boolean checkContribui) {
+		this.checkContribui = checkContribui;
+	}
+
+	public BigDecimal getCheckContribuiValue() {
+		return checkContribuiValue;
+	}
+
+	public void setCheckContribuiValue(BigDecimal checkContribuiValue) {
+		this.checkContribuiValue = checkContribuiValue;
+	}
+
+	public boolean isCheckEstudanteWA() {
+		return checkEstudanteWA;
+	}
+
+	public void setCheckEstudanteWA(boolean checkEstudanteWA) {
+		this.checkEstudanteWA = checkEstudanteWA;
+	}
+
+	public Date getCheckEstudanteWADate() {
+		return checkEstudanteWADate;
+	}
+
+	public void setCheckEstudanteWADate(Date checkEstudanteWADate) {
+		this.checkEstudanteWADate = checkEstudanteWADate;
+	}
+
+	public boolean isCheckEstudanteMail() {
+		return checkEstudanteMail;
+	}
+
+	public void setCheckEstudanteMail(boolean checkEstudanteMail) {
+		this.checkEstudanteMail = checkEstudanteMail;
+	}
+
+	public Date getCheckEstudanteMailDate() {
+		return checkEstudanteMailDate;
+	}
+
+	public void setCheckEstudanteMailDate(Date checkEstudanteMailDate) {
+		this.checkEstudanteMailDate = checkEstudanteMailDate;
+	}
+
+	public boolean isCheckProfissionalWA() {
+		return checkProfissionalWA;
+	}
+
+	public void setCheckProfissionalWA(boolean checkProfissionalWA) {
+		this.checkProfissionalWA = checkProfissionalWA;
+	}
+
+	public Date getCheckProfissionalWADate() {
+		return checkProfissionalWADate;
+	}
+
+	public void setCheckProfissionalWADate(Date checkProfissionalWADate) {
+		this.checkProfissionalWADate = checkProfissionalWADate;
+	}
+
+	public boolean isCheckProfissionalMail() {
+		return checkProfissionalMail;
+	}
+
+	public void setCheckProfissionalMail(boolean checkProfissionalMail) {
+		this.checkProfissionalMail = checkProfissionalMail;
+	}
+
+	public Date getCheckProfissionalMailDate() {
+		return checkProfissionalMailDate;
+	}
+
+	public void setCheckProfissionalMailDate(Date checkProfissionalMailDate) {
+		this.checkProfissionalMailDate = checkProfissionalMailDate;
 	}
 }

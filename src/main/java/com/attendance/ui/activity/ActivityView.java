@@ -7,15 +7,15 @@ import com.attendance.backend.repository.ActivityRepository;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.server.Sizeable.Unit;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.Grid.SelectionMode;
+import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
 @SpringComponent
@@ -26,120 +26,67 @@ public class ActivityView extends CssLayout implements View {
 
     public static final String VIEW_NAME = "Atividades";
 
-	private final ActivityRepository activityRepository;
-	
-	private final ActivityEditorUI activityEditorUI;
+	/** Dependences */
+    @Autowired private ActivityRepository activityRepository;
+    private final ActivityLayout activityLayout;
 
-	//Main components
-	private Label title = new Label("Atividades 2");
-	private Button addNewBtn = new Button("Nova atividade", VaadinIcons.PLUS);
+    /** Components */
+	private Button buttonNew= new Button("Nova atividade", VaadinIcons.PLUS_CIRCLE);
 	private Grid<Activity> grid = new Grid<>(Activity.class);
-	private HorizontalLayout topComponents = new HorizontalLayout(title, addNewBtn);
-
-//	@Autowired
-//	public ActivityView(ActivityRepository activityRepository, ActivityEditorUI editor) {
-//		this.activityRepository = activityRepository;
-//		this.activityEditorUI = editor;
-//
-//        setSizeFull();
-//        addStyleName("crud-view");
-//
-//		grid.setColumns("id", "name");
-//		grid.setSizeFull();
-//
-//        
-//        VerticalLayout barAndGridLayout = new VerticalLayout();
-//        barAndGridLayout.addComponent(grid);
-//        barAndGridLayout.setSizeFull();
-//        barAndGridLayout.setExpandRatio(grid, 1);
-//        barAndGridLayout.setStyleName("crud-main-layout");
-//
-//        addComponent(barAndGridLayout);
-//        
-//        
-//
-//		// Hook logic to components
-//		
-//		// Connect selected Customer to editor or hide if none is selected
-//		grid.asSingleSelect().addValueChangeListener(e -> {
-//			if(e.getValue() == null) return;
-//
-//			activityEditorUI.edit(e.getValue());
-//		});
-//
-//		// Instantiate and edit new Element the new button is clicked
-//		addNewBtn.addClickListener(e -> activityEditorUI.edit(new Activity(null)));
-//
-//		// Listen changes made by the editor, refresh data from backend
-//		activityEditorUI.setChangeHandler(() -> {
-//			activityEditorUI.setVisible(false);
-//			listActivities();
-//		});
-//
-//		// Initialize listing
-//		listActivities();
-//	}
 	
 	@Autowired
-	public ActivityView(ActivityRepository activityRepository, ActivityEditorUI editor) {
-		this.activityRepository = activityRepository;
-		this.activityEditorUI = editor;
+	public ActivityView(ActivityLayout activityLayout) {
+		this.activityLayout = activityLayout;
+		
+		buildLayout();
+		configureComponents();
+		hookLogicToComponents();
+	}
 
+    private void buildLayout(){
         setSizeFull();
         addStyleName("crud-view");
-        
-        VerticalLayout barAndGridLayout = new VerticalLayout();
-        barAndGridLayout.addComponent(grid);
-        barAndGridLayout.setSizeFull();
-        barAndGridLayout.setExpandRatio(grid, 1);
-        barAndGridLayout.setStyleName("crud-main-layout");
-        
-        barAndGridLayout.addComponent(activityEditorUI);
 
-        // Build layout
-		//setVisible(false);
-		addComponents(topComponents, barAndGridLayout);
-		
-		// Configure layouts and components
-//		topComponents.setSpacing(true);
-		grid.setSizeFull();
-		grid.setHeight(300, Unit.PIXELS);
-		grid.setColumns("id", "name");
-		
-//		topComponents.setMargin(true);
-//		topComponents.setSpacing(true);
+        HorizontalLayout topLayout = new HorizontalLayout(buttonNew);
+        topLayout.setWidth("100%");
+        topLayout.setStyleName("top-bar");
+        topLayout.setComponentAlignment(buttonNew, Alignment.MIDDLE_RIGHT);
 
-		// Hook logic to components
-		
-		// Connect selected Customer to editor or hide if none is selected
-		grid.asSingleSelect().addValueChangeListener(e -> {
-			if(e.getValue() == null) return;
-
-			activityEditorUI.edit(e.getValue());
-		});
-
-		// Instantiate and edit new Element the new button is clicked
-		addNewBtn.addClickListener(e -> activityEditorUI.edit(new Activity(null)));
-
-		// Listen changes made by the editor, refresh data from backend
-		activityEditorUI.setChangeHandler(() -> {
-			activityEditorUI.setVisible(false);
-			listActivities();
-		});
-
-		// Initialize listing
-		listActivities();
-	}
-
-	public final void show() {
-		setVisible(true);
+    	VerticalLayout vertical = new VerticalLayout(topLayout, grid);
+    	vertical.setSizeFull();
+    	vertical.setMargin(true);
+    	vertical.setStyleName("form-layout");
+    	vertical.setExpandRatio(grid,  1);
+    	
+        addComponents(activityLayout, vertical);
 	}
 	
-	void listActivities() {
-		grid.setItems(activityRepository.findAll());
+	private void configureComponents() {
+        buttonNew.addStyleName(ValoTheme.BUTTON_PRIMARY);
+		
+		grid.setSizeFull();
+		grid.setColumns("name");
+		grid.getColumn("name").setCaption("Atividades").setResizable(false).setSortable(true);
+		grid.sort("name");
+		grid.setSelectionMode(SelectionMode.SINGLE);
+	}
+
+	private void hookLogicToComponents() {
+
+		buttonNew.addClickListener(e -> activityLayout.enter(this, new Activity(null)));
+
+		grid.asSingleSelect().addValueChangeListener(e -> {
+			if(e.getValue() == null) return;
+			
+			activityLayout.enter(this, e.getValue());
+		});
 	}
 
     @Override
     public void enter(ViewChangeEvent event) {
+    	grid.setVisible(true);
+    	activityLayout.setVisible(false);
+
+    	grid.setItems(activityRepository.findAll());
     }
 }
