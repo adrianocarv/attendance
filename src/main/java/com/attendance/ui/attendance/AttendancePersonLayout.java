@@ -36,7 +36,7 @@ public class AttendancePersonLayout extends CssLayout {
 
     /** Components */
 	private TextField fieldFilter = new TextField();
-	private Button buttonNewPerson = new Button(VaadinIcons.PLUS);
+	private Button buttonNewPerson = new Button(VaadinIcons.PLUS_CIRCLE);
 	private Button buttonBack = new Button("Voltar");
 	private Grid<Person> grid = new Grid<>(Person.class);
 

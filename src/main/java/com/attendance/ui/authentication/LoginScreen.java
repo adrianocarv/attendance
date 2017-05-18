@@ -71,7 +71,7 @@ public class LoginScreen extends CssLayout {
 
         loginForm.addComponent(username = new TextField("Username", "ca"));
         username.setWidth(15, Unit.EM);
-        loginForm.addComponent(password = new PasswordField("Password", "5000"));
+        loginForm.addComponent(password = new PasswordField("Password"));
         password.setWidth(15, Unit.EM);
         password.setDescription("Write anything");
         CssLayout buttons = new CssLayout();

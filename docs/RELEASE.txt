@@ -1,4 +1,14 @@
 ********************
+Version 1.1.1-RC-01:
+
+Bugs:
+
+	- Marcação de presenças: desmarcava um nome já selecionado ao adicionar outro nome
+
+Features:
+
+
+********************
 Version 1.1.0-RC-01:
 
 Bugs:

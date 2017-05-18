@@ -1,6 +1,6 @@
 package com.attendance.backend.model;
 
-import java.sql.Date; 
+import java.sql.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,8 +15,7 @@ public class Attendance {
 	private Date date;
 	private @ManyToOne Activity activity;
 	private @ManyToOne Person person;
-
-	private @Transient boolean present = false;
+	private @Transient boolean present;
 	
 	protected Attendance() {
 		this.present = true;

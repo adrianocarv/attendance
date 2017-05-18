@@ -138,7 +138,7 @@ public class AttendanceLayout extends CssLayout {
 		});
 	}
 
-    public void enter(AttendanceView parentView, Activity a) {
+	public void enter(AttendanceView parentView, Activity a) {
     	this.parentView = parentView;
     	this.currentActivity = a;
 
@@ -162,7 +162,7 @@ public class AttendanceLayout extends CssLayout {
 		
    		if(editMode){
    			grid.setSelectionMode(SelectionMode.MULTI);
-   			grid.asMultiSelect().addSelectionListener(e -> {
+   			grid.asMultiSelect().addValueChangeListener(e -> {
    		   		buttonTotal.setCaption(grid.getSelectedItems().size()+"");
    			});
    		}else{
@@ -196,7 +196,35 @@ public class AttendanceLayout extends CssLayout {
 		this.updateGrid();
 	}
 	
-	private void updateGrid() {
+	void addPerson(Person person) {
+
+		//First, mark presence from selected itens
+		for (Attendance a : gridList){
+			boolean selected = grid.getSelectedItems().contains(a);
+			a.setPresent(selected);
+		}
+
+		//Update ou Add new Person on gridList
+		Attendance newAttendance = new Attendance(currentActivity, person, Date.valueOf(fieldDate.getValue()));
+		newAttendance.setPresent(true);
+
+		if(gridList.contains(newAttendance)){
+			for (Attendance a : gridList){
+				if(a.equals(newAttendance)){
+					a.setPresent(true);
+					break;
+				}
+			}
+		}else{
+			gridList.add(newAttendance);
+		}
+
+		this.updateGrid();
+
+		new Notification(null,"<b>" + person.getName() + "</b> adicionado na lista de presenças.", Notification.Type.HUMANIZED_MESSAGE, true).show(Page.getCurrent());
+	}
+	
+	private void updateGrid(){
 		int total = 0;
 		grid.setItems(gridList);
 		for (Attendance a : gridList){
@@ -205,11 +233,10 @@ public class AttendanceLayout extends CssLayout {
 				total++;
 			}
 		}
-		grid.sort("name");
-		
 		buttonTotal.setCaption(total+"");
+		grid.sort("name");
 	}
-
+	
 	private void persistAttendance() {
 
 		//Remove all first
@@ -231,28 +258,8 @@ public class AttendanceLayout extends CssLayout {
 		}
 	}
 
-	public Activity getCurrentActivity() {
+	Activity getCurrentActivity() {
 		return currentActivity;
-	}
-
-	void addPerson(Person person) {
-		Attendance newAttendance = new Attendance(currentActivity, person, Date.valueOf(fieldDate.getValue()));
-		newAttendance.setPresent(true);
-
-		if(gridList.contains(newAttendance)){
-			for (Attendance a : gridList){
-				if(a.equals(newAttendance)){
-					grid.select(a);
-					break;
-				}
-			}
-			new Notification(null,"<b>" + person.getName() + "</b> já está na lista de presenças.", Notification.Type.WARNING_MESSAGE, true).show(Page.getCurrent());
-			return;
-		}
-		
-		gridList.add(newAttendance);
-		updateGrid();
-		new Notification(null,"<b>" + person.getName() + "</b> adicionado na lista de presenças.", Notification.Type.HUMANIZED_MESSAGE, true).show(Page.getCurrent());
 	}
 	
     void selectAttendanceActivity(LocalDate selectedDate) {

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.attendance.backend.model.ActivityAttendance;
 import com.attendance.backend.repository.ActivityAttendanceRepository;
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Button;
@@ -61,7 +62,8 @@ public class AttendanceActivityLayout extends CssLayout {
 		grid.setColumns("attendanceTitle");
 		grid.getColumn("attendanceTitle").setCaption("Ocorrências").setResizable(false).setSortable(false);
         
-        buttonBack.setStyleName("cancel");
+		buttonBack.setStyleName("cancel");
+		buttonBack.setClickShortcut(ShortcutAction.KeyCode.ESCAPE);
 	}
 
 	private void hookLogicToComponents() {
