@@ -1,16 +1,23 @@
 package com.attendance.ui.attendance;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.attendance.backend.model.Activity;
+import com.attendance.backend.model.ActivityAttendance;
 import com.attendance.backend.model.Attendance;
 import com.attendance.backend.model.Person;
 import com.attendance.backend.repository.ActivityAttendanceRepository;
+import com.attendance.backend.repository.ActivityRepository;
 import com.attendance.backend.repository.AttendanceRepository;
+import com.attendance.backend.repository.PersonRepository;
+import com.attendance.ui.authentication.CurrentUser;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.Page;
 import com.vaadin.spring.annotation.SpringComponent;
@@ -23,6 +30,7 @@ import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
@@ -35,12 +43,15 @@ public class AttendanceLayout extends CssLayout {
     /** Dependences */
 	@Autowired private AttendanceRepository attendanceRepository;
 	@Autowired private ActivityAttendanceRepository activityAttendanceRepository;
+	@Autowired private PersonRepository personRepository;
+	@Autowired private ActivityRepository activityRepository;
 	private final AttendancePersonLayout attendancePersonLayout;
 	private final AttendanceActivityLayout attendanceActivityLayout;
 
     /** Components */
 	private Label labelActivity = new Label(); 
 	private DateField fieldDate = new DateField();
+	private TextField fieldTitle = new TextField();
 	private Button buttonEvents = new Button(VaadinIcons.USER_CHECK);
 	private Button buttonSave = new Button(VaadinIcons.CHECK);
 	private Button buttonEdit = new Button(VaadinIcons.EDIT);
@@ -49,7 +60,9 @@ public class AttendanceLayout extends CssLayout {
 	private Button buttonTotal = new Button();
 	private Grid<Attendance> grid = new Grid<>(Attendance.class);
 	
-    private AttendanceView parentView;
+	HorizontalLayout titleLayout = new HorizontalLayout(fieldTitle);
+
+	private AttendanceView parentView;
     private Activity currentActivity;
 	private boolean editMode = true;
 	private List<Attendance> gridList = null;
@@ -72,7 +85,7 @@ public class AttendanceLayout extends CssLayout {
 
     	HorizontalLayout titleAndDate = new HorizontalLayout(labelActivity, fieldDate);
     	HorizontalLayout actions = new HorizontalLayout(buttonEvents, buttonSave, buttonEdit, buttonNewPerson, buttonBack, buttonTotal);
-    	VerticalLayout layoutTop = new VerticalLayout(titleAndDate, actions);
+    	VerticalLayout layoutTop = new VerticalLayout(titleAndDate, titleLayout, actions);
     	VerticalLayout layoutTopAndGrig = new VerticalLayout(layoutTop, grid);
 
     	actions.setSpacing(true);
@@ -93,6 +106,7 @@ public class AttendanceLayout extends CssLayout {
 	private void configureComponents() {
         
 		labelActivity.setStyleName(ValoTheme.LABEL_BOLD);
+        fieldTitle.setPlaceholder("Título requerido");
 		
 		buttonEvents.setStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
 		buttonSave.setStyleName(ValoTheme.BUTTON_FRIENDLY);
@@ -111,9 +125,10 @@ public class AttendanceLayout extends CssLayout {
 		buttonEvents.addClickListener(e -> attendanceActivityLayout.enter(this));
 		
 		buttonSave.addClickListener(e -> {
-			editMode = false;
-			persistAttendance();
-			refreshEditModeComponents();	
+			if(persistAttendance()){
+				editMode = false;
+				refreshEditModeComponents();
+			}
 		});
 		
 		buttonEdit.addClickListener(e -> {
@@ -125,15 +140,10 @@ public class AttendanceLayout extends CssLayout {
 		
 		buttonBack.addClickListener(e -> parentView.enter(null));
 		
-		fieldDate.addFocusListener(e -> {
-			buttonSave.setVisible(false);
-		});
-		
-		fieldDate.addBlurListener(e -> {
-			buttonSave.setVisible(true);
-		});
-
 		fieldDate.addValueChangeListener(e -> {
+			if(fieldDate.getValue() == null)
+				fieldDate.setValue(new Date(System.currentTimeMillis()).toLocalDate());
+
 			refreshEditModeComponents();	
 		});
 	}
@@ -146,8 +156,8 @@ public class AttendanceLayout extends CssLayout {
     	setVisible(true);
     	
 		labelActivity.setValue(currentActivity.getName());
-		if(fieldDate.isEmpty())
-			fieldDate.setValue(new Date(System.currentTimeMillis()).toLocalDate());
+		fieldDate.setValue(new Date(System.currentTimeMillis()).toLocalDate());
+		fieldTitle.setValue("");
 
 		editMode = true;
     	this.refreshEditModeComponents();
@@ -155,7 +165,9 @@ public class AttendanceLayout extends CssLayout {
     
 	private void refreshEditModeComponents(){
 
-		fieldDate.setEnabled(editMode);
+		fieldDate.setEnabled(!editMode);
+		fieldTitle.setEnabled(editMode);
+		titleLayout.setVisible(currentActivity.isCheckTitleRequired());
 		buttonSave.setVisible(editMode);
    		buttonEdit.setVisible(!editMode);
    		buttonNewPerson.setVisible(editMode);
@@ -163,7 +175,8 @@ public class AttendanceLayout extends CssLayout {
    		if(editMode){
    			grid.setSelectionMode(SelectionMode.MULTI);
    			grid.asMultiSelect().addValueChangeListener(e -> {
-   		   		buttonTotal.setCaption(grid.getSelectedItems().size()+"");
+   		   		String today = DateUtils.isSameDay(Date.valueOf(fieldDate.getValue()), new Date(System.currentTimeMillis())) ? " HJ" : "";
+   				buttonTotal.setCaption(grid.getSelectedItems().size()+today);
    			});
    		}else{
    			grid.setSelectionMode(SelectionMode.SINGLE);
@@ -182,15 +195,26 @@ public class AttendanceLayout extends CssLayout {
 			List<Person> people = activityAttendanceRepository.findByLastAttendances(currentActivity);
 			for (Person person : people) {
 				Attendance attendance = new Attendance(currentActivity, person, Date.valueOf(fieldDate.getValue()));
-				if(!attendances.contains(attendance))
+				if(!attendances.contains(attendance)){
+					Person personDB = personRepository.findOne(person.getId());
+					attendance.setPerson(personDB);
 					attendances.add(attendance);
+				}
 			}
 			
 			gridList = attendances;
+
+			//Set Title
+			String title = attendances.isEmpty() ? "" : attendances.get(0).getTitle(); 
+			fieldTitle.setValue(title == null ? "" : title);
 		} else{
 			//DB Persisted People
 			List<Attendance> attendances = attendanceRepository.findByDateAndActivity(Date.valueOf(fieldDate.getValue()), currentActivity);
 			gridList = attendances;
+			
+			//Set Title
+			String title = attendances.isEmpty() ? "" : attendances.get(0).getTitle(); 
+			fieldTitle.setValue(title == null ? "" : title);
 		}
 		
 		this.updateGrid();
@@ -204,7 +228,7 @@ public class AttendanceLayout extends CssLayout {
 			a.setPresent(selected);
 		}
 
-		//Update ou Add new Person on gridList
+		//Update or Add new Person on gridList
 		Attendance newAttendance = new Attendance(currentActivity, person, Date.valueOf(fieldDate.getValue()));
 		newAttendance.setPresent(true);
 
@@ -233,12 +257,21 @@ public class AttendanceLayout extends CssLayout {
 				total++;
 			}
 		}
-		buttonTotal.setCaption(total+"");
+   		String today = DateUtils.isSameDay(Date.valueOf(fieldDate.getValue()), new Date(System.currentTimeMillis())) ? " HJ" : "";
+		buttonTotal.setCaption(total+today);
 		grid.sort("name");
 	}
 	
-	private void persistAttendance() {
+	private boolean persistAttendance() {
 
+		//Required title check
+		fieldTitle.setValue(StringUtils.trim(fieldTitle.getValue()));
+		if(currentActivity.isCheckTitleRequired() && fieldTitle.getValue().length() < 2){
+			new Notification(null, "Título é requerido para esta atividade.", Notification.Type.ERROR_MESSAGE, true).show(Page.getCurrent());
+			fieldTitle.focus();
+			return false;
+		}
+			
 		//Remove all first
 		List<Attendance> savedList = attendanceRepository.findByDateAndActivity(Date.valueOf(fieldDate.getValue()), currentActivity);
 		for (Attendance a : savedList) {
@@ -248,22 +281,34 @@ public class AttendanceLayout extends CssLayout {
 		//Insert all selected, if not exists
 		for (Attendance a : grid.getSelectedItems()) {
 
-			//Skip if exists
-			boolean isSaved = attendanceRepository.findByDateAndActivityAndPerson(Date.valueOf(fieldDate.getValue()), currentActivity, a.getPerson()).size() > 0;
-			if(isSaved) continue;
-
 			a.setId(null);
 			a.setDate(Date.valueOf(fieldDate.getValue()));
+			a.setTitle(StringUtils.isBlank(fieldTitle.getValue()) ? null : fieldTitle.getValue());
+			a.setLastEditTime(new Timestamp(System.currentTimeMillis()));
+			a.setLastEditUser(CurrentUser.getUser());
+			
 			attendanceRepository.save(a);
 		}
+		
+		//Update last attendance info on respective Activity
+		ActivityAttendance last = activityAttendanceRepository.findOneLastByActivity(currentActivity);
+		if(last != null){
+			Activity activityDB = activityRepository.findOne(currentActivity.getId());
+			activityDB.setLastAttendanceDate(last.getDate());
+			activityDB.setLastAttendanceTotal(last.getTotalPresent());
+			activityRepository.save(activityDB);
+		}
+		
+		return true;
 	}
 
 	Activity getCurrentActivity() {
 		return currentActivity;
 	}
 	
-    void selectAttendanceActivity(LocalDate selectedDate) {
+    void selectAttendanceActivity(LocalDate selectedDate, String title) {
 		fieldDate.setValue(selectedDate);
+		fieldTitle.setValue(title == null ? "" : title);
 		editMode = false;
     	this.refreshEditModeComponents();
     }

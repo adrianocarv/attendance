@@ -6,15 +6,19 @@ import com.attendance.backend.model.Activity;
 import com.attendance.backend.repository.ActivityRepository;
 import com.attendance.backend.repository.AttendanceRepository;
 import com.attendance.backend.repository.CenterRepository;
+import com.attendance.ui.util.IntegerConverter;
 import com.attendance.ui.util.SafeButton;
 import com.vaadin.data.BeanValidationBinder;
 import com.vaadin.data.Binder;
 import com.vaadin.data.BinderValidationStatus;
 import com.vaadin.event.ShortcutAction;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.Page;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
+import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CssLayout;
@@ -42,7 +46,11 @@ public class ActivityLayout extends CssLayout {
 	private TextField name = new TextField("Nome");
 	private TextField nameComplement = new TextField("Complemento");
 	private TextField description = new TextField("Descrição");
-    private Button buttonSave = new Button("Savar");
+    private CheckBox checkTitleRequired = new CheckBox("Requer título na marcação");
+	private TextField personSuggestionByEvents = new TextField("Últimos eventos");
+	private TextField personSuggestionByDays = new TextField("Últimos dias");
+	private TextField resumoMensalId = new TextField("Id");
+    private Button buttonSave = new Button("Salvar");
     private Button buttonCancel = new Button("Cancelar");
     private SafeButton buttonDelete = new SafeButton("Excluir", "Confirma a exclusão da atividade?");
 
@@ -64,20 +72,31 @@ public class ActivityLayout extends CssLayout {
     	
     	setStyleName("product-form-wrapper");
     	
-    	VerticalLayout vertical = new VerticalLayout(labelCenter, labelTotalAttendance, labelId, name, nameComplement, description, buttonSave, buttonCancel, buttonDelete, buttonDelete);
+    	VerticalLayout vertical = new VerticalLayout(labelCenter, labelTotalAttendance, labelId, name, nameComplement, description, checkTitleRequired);
     	vertical.setMargin(false);
     	vertical.setStyleName("form-layout");
+    	
+    	VerticalLayout abaSuggestion = new VerticalLayout(personSuggestionByEvents, personSuggestionByDays);
+    	VerticalLayout abaResumoMensal = new VerticalLayout(resumoMensalId);
+    	Accordion accordion = new Accordion();
+        accordion.addTab(abaSuggestion, "Sugerir Pessoas", VaadinIcons.CHECK_SQUARE_O);
+        accordion.addTab(abaResumoMensal, "Resumo Mensal", VaadinIcons.FILE_TEXT_O);
+        vertical.addComponents(accordion, buttonSave, buttonCancel, buttonDelete, buttonDelete);
     	
     	addComponent(vertical);
 	}
 	private void configureComponents() {
         
 		// bind using naming convention
-		binder.bindInstanceFields(this);
+        binder.forField(personSuggestionByEvents).withConverter(new IntegerConverter()).bind("personSuggestionByEvents");
+        binder.forField(personSuggestionByDays).withConverter(new IntegerConverter()).bind("personSuggestionByDays");
+        binder.forField(resumoMensalId).withConverter(new IntegerConverter()).bind("resumoMensalId");
+        binder.bindInstanceFields(this);
 
 		name.setSizeFull();
 		nameComplement.setSizeFull();
 		description.setSizeFull();
+    	checkTitleRequired.setSizeFull();
 		
 		buttonSave.addStyleName(ValoTheme.BUTTON_PRIMARY);
         buttonCancel.addStyleName("cancel");

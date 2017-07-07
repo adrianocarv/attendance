@@ -5,6 +5,10 @@ cd GitHub\attendance
 heroku
 
 git add .
-git commit -m "Version 1.1.0-RC-01"
+git commit -m "Version 1.2.0-RC-01"
 git push heroku master
 heroku open
+
+
+
+jdk8/jre1.8.0_111/bin/java -Dserver.port=8081 -jar attendance-1.2.0-RC-01.jar &

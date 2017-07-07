@@ -6,12 +6,14 @@ import java.time.format.DateTimeFormatter;
 public class ActivityAttendance {
 
 	private Date date;
+	private String title;
 	private Activity activity;
 	private Long totalPresent;
 
-	public ActivityAttendance(Long activityId, Date date, Long totalPresent) {
+	public ActivityAttendance(Long activityId, Date date, String title, Long totalPresent) {
 		this.activity = new Activity(activityId);
 		this.date = date;
+		this.title = title;
 		this.totalPresent = totalPresent;
 	}
 
@@ -46,9 +48,16 @@ public class ActivityAttendance {
 		return totalPresent;
 	}
 
-
 	public void setTotalPresent(Long totalPresent) {
 		this.totalPresent = totalPresent;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 }

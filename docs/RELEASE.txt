@@ -1,4 +1,22 @@
 ********************
+Version 1.2.0-RC-01:
+
+Bugs:
+
+	- Presença: Campo de data: se null, coloca dia de hoje
+
+Features:
+
+	- Presença: persistir user e timestamp da marcação
+	- Presenças para atividades com título
+	- Desp: listar últimos 60 dias
+	- Presença e pessoa: validação dos campos de data.
+	- Presença: onfocus da data, desabilita a grid, e habilita on blur focus
+	- Presença: ao alterar a data, entra em modo read only
+	- shortName em itálico, nome (u) ou (c) NEW
+
+
+********************
 Version 1.1.1-RC-01:
 
 Bugs:

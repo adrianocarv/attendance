@@ -76,7 +76,7 @@ public class PersonLayout extends CssLayout {
     private TextField tag3 = new TextField("Tag 3");
     private TextField tag4 = new TextField("Tag 4");
 	
-	private Button buttonSave = new Button("Savar");
+	private Button buttonSave = new Button("Salvar");
     private Button buttonCancel = new Button("Cancelar");
     private SafeButton buttonDelete = new SafeButton("Excluir", "Confirma a exclusão dessa pessoa?");
 

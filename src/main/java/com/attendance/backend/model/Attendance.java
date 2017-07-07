@@ -1,6 +1,7 @@
 package com.attendance.backend.model;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,6 +14,9 @@ public class Attendance {
 
     private @Id @GeneratedValue Long id;
 	private Date date;
+	private String title;
+	private Timestamp lastEditTime;
+	private @ManyToOne User lastEditUser;
 	private @ManyToOne Activity activity;
 	private @ManyToOne Person person;
 	private @Transient boolean present;
@@ -87,4 +91,28 @@ public class Attendance {
 		this.present = present;
 	}
 
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public User getLastEditUser() {
+		return lastEditUser;
+	}
+
+	public void setLastEditUser(User lastEditUser) {
+		this.lastEditUser = lastEditUser;
+	}
+
+	public Timestamp getLastEditTime() {
+		return lastEditTime;
+	}
+
+	public void setLastEditTime(Timestamp lastEditTime) {
+		this.lastEditTime = lastEditTime;
+	}
+	
 }

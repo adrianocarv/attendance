@@ -77,7 +77,7 @@ public class AttendanceActivityLayout extends CssLayout {
 				return;
 			
 			setVisible(false);
-			parentView.selectAttendanceActivity(e.getValue().getDate().toLocalDate());
+			parentView.selectAttendanceActivity(e.getValue().getDate().toLocalDate(), e.getValue().getTitle());
 		});
 		
 	}

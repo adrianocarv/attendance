@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.attendance.ui.attendance.AttendanceView;
 import com.attendance.ui.authentication.AccessControl;
-import com.attendance.ui.authentication.BasicAccessControl;
+import com.attendance.ui.authentication.DBAccessControl;
 import com.attendance.ui.authentication.LoginScreen;
 import com.attendance.ui.authentication.LoginScreen.LoginListener;
 import com.vaadin.annotations.Theme;
@@ -34,7 +34,8 @@ public class MyUI extends UI {
 
 	private static final long serialVersionUID = 1L;
 
-	private AccessControl accessControl = new BasicAccessControl();
+	@Autowired
+	private DBAccessControl accessControl;
 
 	private final MainScreen mainScreen;
 	

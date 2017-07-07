@@ -89,7 +89,15 @@ public class Person {
 	}
 
 	public String getDisplayName() {
-		return StringUtils.isEmpty(shortName) ? name : shortName;
+		String display = StringUtils.isEmpty(shortName) ? name : shortName+".";
+		if(checkColegial)
+			display += " (c)";
+		if(checkUniversitario)
+			display += " (u)";
+		if(status == PersonStatus.NEW)
+			display += " NEW";
+
+		return display;
 	}
 
 	//accessors
@@ -187,7 +195,6 @@ public class Person {
 
 	public void setStatus(PersonStatus status) {
 		this.status = status;
-		this.name += " (NEW)"; 
 	}
 
 	public boolean isCheckUniversitario() {

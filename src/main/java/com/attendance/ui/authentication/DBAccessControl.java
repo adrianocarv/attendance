@@ -1,24 +1,35 @@
 package com.attendance.ui.authentication;
 
-import com.attendance.backend.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 
-/**
- * Default mock implementation of {@link AccessControl}. This implementation
- * accepts any string as a password, and considers the user "admin" as the only
- * administrator.
- */
-public class BasicAccessControl implements AccessControl {
+import com.attendance.backend.model.User;
+import com.attendance.backend.repository.UserRepository;
+import com.vaadin.spring.annotation.SpringComponent;
+
+@SpringComponent
+public class DBAccessControl implements AccessControl {
 
 	private static final long serialVersionUID = 1L;
+	
+    /** Dependences */
+	@Autowired private UserRepository userRepository;
+	
+	
 
 	@Override
     public boolean signIn(String username, String password) {
-        if (username == null || username.isEmpty())
-            return false;
-
-        CurrentUser.set(new User(username));
         
-        return (username.equals("ca")) && "500".equals(password) ;
+		User user = userRepository.findOneByUsername(username);
+		
+		if(user == null)
+			return false;
+		
+		if(!user.getPassword().equals(password))
+			return false;
+		
+        CurrentUser.set(user);
+        
+        return true;
     }
 
     @Override

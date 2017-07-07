@@ -1,5 +1,6 @@
 package com.attendance.ui.authentication;
 
+import com.attendance.backend.model.User;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinService;
 
@@ -16,8 +17,7 @@ public final class CurrentUser {
     /**
      * The attribute key used to store the username in the session.
      */
-    public static final String CURRENT_USER_SESSION_ATTRIBUTE_KEY = CurrentUser.class
-            .getCanonicalName();
+    public static final String CURRENT_USER_SESSION_ATTRIBUTE_KEY = CurrentUser.class.getCanonicalName();
 
     private CurrentUser() {
     }
@@ -30,15 +30,19 @@ public final class CurrentUser {
      *             if the current session cannot be accessed.
      */
     public static String get() {
-        String currentUser = (String) getCurrentRequest().getWrappedSession()
-                .getAttribute(CURRENT_USER_SESSION_ATTRIBUTE_KEY);
+    	User currentUser = (User) getCurrentRequest().getWrappedSession().getAttribute(CURRENT_USER_SESSION_ATTRIBUTE_KEY);
         if (currentUser == null) {
             return "";
         } else {
-            return currentUser;
+            return currentUser.getUsername();
         }
     }
 
+    public static User getUser() {
+    	User currentUser = (User) getCurrentRequest().getWrappedSession().getAttribute(CURRENT_USER_SESSION_ATTRIBUTE_KEY);
+    	return currentUser;
+    }
+    
     /**
      * Sets the name of the current user and stores it in the current session.
      * Using a {@code null} username will remove the username from the session.
@@ -46,13 +50,11 @@ public final class CurrentUser {
      * @throws IllegalStateException
      *             if the current session cannot be accessed.
      */
-    public static void set(String currentUser) {
+    public static void set(User currentUser) {
         if (currentUser == null) {
-            getCurrentRequest().getWrappedSession().removeAttribute(
-                    CURRENT_USER_SESSION_ATTRIBUTE_KEY);
+            getCurrentRequest().getWrappedSession().removeAttribute(CURRENT_USER_SESSION_ATTRIBUTE_KEY);
         } else {
-            getCurrentRequest().getWrappedSession().setAttribute(
-                    CURRENT_USER_SESSION_ATTRIBUTE_KEY, currentUser);
+            getCurrentRequest().getWrappedSession().setAttribute(CURRENT_USER_SESSION_ATTRIBUTE_KEY, currentUser);
         }
     }
 

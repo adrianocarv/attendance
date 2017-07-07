@@ -12567,13 +12567,23 @@ div.v-layout.v-horizontal.v-widget {
 	position: absolute;
 	top: 0;
 	bottom: 0;
+	right: 0; /* Willian (18/05/2017) */
 	z-index: 100;
 	width: 288px;
 	height: 100%;
 	overflow: auto;
 	padding: 18px 18px;
 	background-color: #3b3f42;
-	color: #d7d9da;
+
+	 /* Willian (18/05/2017) */
+	 box-shadow:
+		0 0 20px 5px rgba(0, 0, 0, 0.3),
+		0 0 6px 1.5px rgba(0, 0, 0, 0.23);
+	 color: #d7d9da;
+}
+
+.mytheme .product-form-wrapper table {
+	color: #000000; /* Willian (19/05/2017) */
 }
 
 .mytheme .product-form-wrapper .v-textfield {
@@ -12593,7 +12603,7 @@ div.v-layout.v-horizontal.v-widget {
 	line-height: normal;
 	height: 32px;
 	border-radius: 4px;
-	padding: 4px 8px;
+	/* padding: 4px 8px; Willian (18/05/2017) */
 	border: 1px solid #252729;
 	background: #2f3235;
 	color: #c3c6c8;

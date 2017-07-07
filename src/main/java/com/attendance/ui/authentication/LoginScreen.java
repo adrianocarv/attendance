@@ -122,9 +122,7 @@ public class LoginScreen extends CssLayout {
         if (accessControl.signIn(username.getValue(), password.getValue())) {
             loginListener.loginSuccessful();
         } else {
-            showNotification(new Notification("Login failed",
-                    "Please check your username and password and try again.",
-                    Notification.Type.HUMANIZED_MESSAGE));
+            showNotification(new Notification("Falha no login", "Por favor, verifique seu username e senha e tente novamente.", Notification.Type.HUMANIZED_MESSAGE));
             password.focus();
         }
     }
