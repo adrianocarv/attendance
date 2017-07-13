@@ -3,6 +3,8 @@ package com.attendance.ui;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.attendance.backend.model.Center;
+import com.attendance.ui.authentication.CurrentUser;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
@@ -14,6 +16,7 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
@@ -21,6 +24,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.MenuBar.Command;
 import com.vaadin.ui.MenuBar.MenuItem;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
@@ -38,7 +42,12 @@ public class Menu extends CssLayout {
 
     private CssLayout menuItemsLayout;
     private CssLayout menuPart;
-
+    
+    // menu user section
+    private Label title = new Label("");
+    private ComboBox<Center> selectCurrentUserCenters = new ComboBox<Center>();
+    private Label username = new Label(CurrentUser.get());
+    
     public Menu(Navigator navigator) {
         this.navigator = navigator;
         setPrimaryStyleName(ValoTheme.MENU_ROOT);
@@ -49,7 +58,6 @@ public class Menu extends CssLayout {
         final HorizontalLayout top = new HorizontalLayout();
         top.setDefaultComponentAlignment(Alignment.MIDDLE_LEFT);
         top.addStyleName(ValoTheme.MENU_TITLE);
-        Label title = new Label("Attendance");
         title.addStyleName(ValoTheme.LABEL_H3);
         title.setSizeUndefined();
         Image image = new Image(null, new ThemeResource("img/table-logo.png"));
@@ -97,6 +105,29 @@ public class Menu extends CssLayout {
         menuItemsLayout.setPrimaryStyleName(VALO_MENUITEMS);
         menuPart.addComponent(menuItemsLayout);
 
+        // menu user section
+        username.setStyleName(VALO_MENUITEMS);
+        username.setIcon(VaadinIcons.USER_CHECK);
+        selectCurrentUserCenters.setStyleName(VALO_MENUITEMS);
+        selectCurrentUserCenters.setEmptySelectionAllowed(false);
+
+    	selectCurrentUserCenters.addValueChangeListener(e -> {
+		    if(e.getValue() == null || e.getValue() == e.getOldValue()) return;
+		    CurrentUser.getUser().setCurrentCenter(e.getValue());
+	    	this.title.setValue(CurrentUser.getCurrentCenter().getName());
+            
+	    	//Hack to refresh current page
+	    	String viewName = navigator.getState();
+	    	navigator.navigateTo("");
+	    	navigator.navigateTo(viewName);
+		});
+
+    	VerticalLayout menuUserSection = new VerticalLayout();
+        menuUserSection.setPrimaryStyleName(VALO_MENUITEMS);
+        menuUserSection.addComponents(username, selectCurrentUserCenters);
+
+        menuPart.addComponent(menuUserSection);
+        
         addComponent(menuPart);
     }
 
@@ -115,8 +146,7 @@ public class Menu extends CssLayout {
      * @param icon
      *            view icon in the menu
      */
-    public void addView(View view, final String name, String caption,
-            Resource icon) {
+    public void addView(View view, final String name, String caption, Resource icon) {
         navigator.addView(name, view);
         createViewButton(name, caption, icon);
     }
@@ -136,8 +166,7 @@ public class Menu extends CssLayout {
      * @param icon
      *            view icon in the menu
      */
-    public void addView(Class<? extends View> viewClass, final String name,
-            String caption, Resource icon) {
+    public void addView(Class<? extends View> viewClass, final String name, String caption, Resource icon) {
         navigator.addView(name, viewClass);
         createViewButton(name, caption, icon);
     }
@@ -174,5 +203,14 @@ public class Menu extends CssLayout {
             selected.addStyleName("selected");
         }
         menuPart.removeStyleName(VALO_MENU_VISIBLE);
+    }
+    
+    void loadMenuUserSection(){
+    	this.title.setValue(CurrentUser.getCurrentCenter().getName());
+    	this.username.setValue(CurrentUser.get());
+    	this.selectCurrentUserCenters.setItems(CurrentUser.getCenters());
+    	this.selectCurrentUserCenters.setSelectedItem(CurrentUser.getCurrentCenter());
+    	this.selectCurrentUserCenters.setItemCaptionGenerator(Center::getName);
+    	this.selectCurrentUserCenters.setVisible(CurrentUser.getCenters().size() > 1);
     }
 }

@@ -30,7 +30,7 @@ public class LoginScreen extends CssLayout {
     private Button forgotPassword;
     private LoginListener loginListener;
     private AccessControl accessControl;
-
+    
     public LoginScreen(AccessControl accessControl, LoginListener loginListener) {
         this.loginListener = loginListener;
         this.accessControl = accessControl;
@@ -69,7 +69,7 @@ public class LoginScreen extends CssLayout {
         loginForm.setSizeUndefined();
         loginForm.setMargin(false);
 
-        loginForm.addComponent(username = new TextField("Username", "ca"));
+        loginForm.addComponent(username = new TextField("Username"));
         username.setWidth(15, Unit.EM);
         loginForm.addComponent(password = new PasswordField("Password"));
         password.setWidth(15, Unit.EM);
@@ -120,7 +120,7 @@ public class LoginScreen extends CssLayout {
 
     private void login() {
         if (accessControl.signIn(username.getValue(), password.getValue())) {
-            loginListener.loginSuccessful();
+        	loginListener.loginSuccessful();
         } else {
             showNotification(new Notification("Falha no login", "Por favor, verifique seu username e senha e tente novamente.", Notification.Type.HUMANIZED_MESSAGE));
             password.focus();

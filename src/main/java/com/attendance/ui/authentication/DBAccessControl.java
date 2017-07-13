@@ -3,6 +3,7 @@ package com.attendance.ui.authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.attendance.backend.model.User;
+import com.attendance.backend.repository.SharingUserRepository;
 import com.attendance.backend.repository.UserRepository;
 import com.vaadin.spring.annotation.SpringComponent;
 
@@ -13,8 +14,7 @@ public class DBAccessControl implements AccessControl {
 	
     /** Dependences */
 	@Autowired private UserRepository userRepository;
-	
-	
+    @Autowired private SharingUserRepository sharingUserRepository;
 
 	@Override
     public boolean signIn(String username, String password) {
@@ -27,7 +27,8 @@ public class DBAccessControl implements AccessControl {
 		if(!user.getPassword().equals(password))
 			return false;
 		
-        CurrentUser.set(user);
+		CurrentUser.set(user);
+		user.setCenters(sharingUserRepository.findCurrentUserCenters());
         
         return true;
     }

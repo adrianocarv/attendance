@@ -23,7 +23,7 @@ public class BasicAccessControl implements AccessControl {
 
     @Override
     public boolean isUserSignedIn() {
-        return !CurrentUser.get().isEmpty();
+        return CurrentUser.getUser() != null;
     }
 
     @Override

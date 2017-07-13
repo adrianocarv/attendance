@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.attendance.ui.about.AboutView;
 import com.attendance.ui.activity.ActivityView;
 import com.attendance.ui.attendance.AttendanceView;
+import com.attendance.ui.center.CenterView;
 import com.attendance.ui.person.PersonView;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.Navigator;
@@ -25,13 +26,16 @@ public class MainScreen extends HorizontalLayout {
     
 	private static final long serialVersionUID = 1L;
 
-	private Menu menu;
-
+	/** Dependences */
 	@Autowired private AttendanceView attendanceView;
 	@Autowired private PersonView personView;
 	@Autowired private ActivityView activityView;
+	@Autowired private CenterView centerView;
 	@Autowired private AboutView aboutView;
 
+    /** Components */
+	private Menu menu;
+		
 	public MainScreen() {
         setSpacing(false);
         setStyleName("main-screen");
@@ -48,6 +52,7 @@ public class MainScreen extends HorizontalLayout {
         menu.addView(attendanceView, AttendanceView.VIEW_NAME, AttendanceView.VIEW_NAME, VaadinIcons.CHECK_SQUARE_O);
         menu.addView(personView, PersonView.VIEW_NAME, PersonView.VIEW_NAME, VaadinIcons.GROUP);
         menu.addView(activityView, ActivityView.VIEW_NAME, ActivityView.VIEW_NAME, VaadinIcons.CALENDAR_USER);
+        menu.addView(centerView, CenterView.VIEW_NAME, CenterView.VIEW_NAME, VaadinIcons.INSTITUTION);
         menu.addView(aboutView, AboutView.VIEW_NAME, AboutView.VIEW_NAME, VaadinIcons.INFO_CIRCLE);
 
         navigator.addViewChangeListener(viewChangeListener);
@@ -74,4 +79,8 @@ public class MainScreen extends HorizontalLayout {
         }
 
     };
+    
+    void loadMenuUserSection(){
+    	this.menu.loadMenuUserSection();
+    }
 }

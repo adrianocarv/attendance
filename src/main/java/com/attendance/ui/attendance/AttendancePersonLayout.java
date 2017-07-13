@@ -9,6 +9,7 @@ import com.attendance.backend.model.Center;
 import com.attendance.backend.model.Person;
 import com.attendance.backend.model.PersonStatus;
 import com.attendance.backend.repository.PersonRepository;
+import com.attendance.ui.authentication.CurrentUser;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.Page;
@@ -120,7 +121,7 @@ public class AttendancePersonLayout extends CssLayout {
 		if (StringUtils.isEmpty(filterText))
 			grid.setItems(new ArrayList<Person>());
 		else
-			grid.setItems(personRepository.findByNameStartsWithIgnoreCaseOrderByNameAsc("%"+filterText.trim()));
+			grid.setItems(personRepository.findByNameStartsWithIgnoreCaseAndCenterOrderByNameAsc("%"+filterText.trim(), CurrentUser.getCurrentCenter()));
 	}
 	
 	private void saveNewPerson() {

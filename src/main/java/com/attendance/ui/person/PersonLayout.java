@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.attendance.backend.model.Person;
 import com.attendance.backend.model.PersonStatus;
 import com.attendance.backend.repository.AttendanceRepository;
-import com.attendance.backend.repository.CenterRepository;
 import com.attendance.backend.repository.PersonRepository;
+import com.attendance.ui.authentication.CurrentUser;
 import com.attendance.ui.util.LocalDateToSqlDateConverter;
 import com.attendance.ui.util.RealConverter;
 import com.attendance.ui.util.SafeButton;
@@ -40,7 +40,6 @@ public class PersonLayout extends CssLayout {
 
     /** Dependences */
 	@Autowired private PersonRepository personRepository;
-	@Autowired private CenterRepository centerRepository;
 	@Autowired private AttendanceRepository attendanceRepository;
 
     /** Components */
@@ -257,14 +256,11 @@ public class PersonLayout extends CssLayout {
 		final boolean persisted = person.getId() != null;
 		if(persisted){
 			current = personRepository.findOne(person.getId());
-			current.setCenter(centerRepository.findOne(1L));
 			current.setTotalAttendance(attendanceRepository.findByPerson(current).size());
 		}else{
 			current = person;
-
-			//TODO Tornar dinâmico
-			 current.setCenter(centerRepository.findOne(1L));
-			 current.setStatus(PersonStatus.NEW);
+			current.setCenter(CurrentUser.getCurrentCenter());
+			current.setStatus(PersonStatus.NEW);
 		}
 		
 		binder.setBean(current);

@@ -1,5 +1,7 @@
 package com.attendance.backend.model;
 
+import java.sql.Timestamp;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -10,8 +12,11 @@ public class Sharing {
 
     private @Id @GeneratedValue Long id;
 	private @ManyToOne User user;
+	private @ManyToOne Center center;
 	private @ManyToOne Activity activity;
-	private Character type;
+    private SharingType type;
+    private SharingStatus status;
+	private Timestamp statusTime;
 
 	protected Sharing() {
 	}
@@ -44,11 +49,36 @@ public class Sharing {
 		this.activity = activity;
 	}
 
-	public Character getType() {
+	public Center getCenter() {
+		return center;
+	}
+
+	public void setCenter(Center center) {
+		this.center = center;
+	}
+
+	public SharingType getType() {
 		return type;
 	}
 
-	public void setType(Character type) {
+	public void setType(SharingType type) {
 		this.type = type;
 	}
+
+	public SharingStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(SharingStatus status) {
+		this.status = status;
+	}
+
+	public Timestamp getStatusTime() {
+		return statusTime;
+	}
+
+	public void setStatusTime(Timestamp statusTime) {
+		this.statusTime = statusTime;
+	}
+	
 }

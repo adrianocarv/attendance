@@ -9,7 +9,7 @@ import com.attendance.backend.model.Person;
 
 public interface PersonRepository extends JpaRepository<Person, Long> {
 
-	List<Person> findByNameStartsWithIgnoreCaseOrderByNameAsc(String name);
+	List<Person> findByNameStartsWithIgnoreCaseAndCenterOrderByNameAsc(String name, Center center);
 
 	List<Person> findByNameIgnoreCaseAndCenter(String name, Center center);
 }

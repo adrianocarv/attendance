@@ -1,4 +1,15 @@
 ********************
+Version 2.0.0-RC-01:
+
+Bugs:
+
+
+Features:
+
+	- Usuário para segmentar por Centro: permite Sand Box
+
+
+********************
 Version 1.2.0-RC-01:
 
 Bugs:

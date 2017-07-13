@@ -2,6 +2,7 @@ package com.attendance.ui;
 
 import javax.servlet.annotation.WebServlet;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.attendance.ui.attendance.AttendanceView;
@@ -64,11 +65,16 @@ public class MyUI extends UI {
     }
 
     protected void showMainView() {
-        addStyleName(ValoTheme.UI_WITH_MENU);
-        setContent(mainScreen);
-        getNavigator().navigateTo(AttendanceView.VIEW_NAME);
-    }
 
+    	this.mainScreen.loadMenuUserSection();
+    	
+    	addStyleName(ValoTheme.UI_WITH_MENU);
+        setContent(mainScreen);
+
+        String viewName = StringUtils.isEmpty(getNavigator().getState()) ? AttendanceView.VIEW_NAME : getNavigator().getState();
+        getNavigator().navigateTo(viewName);
+    }
+    
     public static MyUI get() {
         return (MyUI) UI.getCurrent();
     }

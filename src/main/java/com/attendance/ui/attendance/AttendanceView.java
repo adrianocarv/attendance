@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.attendance.backend.model.Activity;
 import com.attendance.backend.repository.ActivityRepository;
+import com.attendance.ui.authentication.CurrentUser;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.spring.annotation.SpringComponent;
@@ -71,7 +72,7 @@ public class AttendanceView extends CssLayout implements View {
     	vertical.setVisible(true);
     	attendanceLayout.setVisible(false);
 
-    	grid.setItems(activityRepository.findAll());
+    	grid.setItems(activityRepository.findByCenter(CurrentUser.getCurrentCenter()));
     }
 
 	public VerticalLayout getVertical() {

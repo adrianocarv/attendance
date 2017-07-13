@@ -5,7 +5,7 @@ cd GitHub\attendance
 heroku
 
 git add .
-git commit -m "Version 1.2.0-RC-01"
+git commit -m "Version 2.0.0-RC-01"
 git push heroku master
 heroku open
 

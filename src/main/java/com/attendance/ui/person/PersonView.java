@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.attendance.backend.model.Person;
 import com.attendance.backend.repository.PersonRepository;
+import com.attendance.ui.authentication.CurrentUser;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -111,6 +112,6 @@ public class PersonView extends CssLayout implements View {
 		if (StringUtils.isEmpty(filterText))
 			grid.setItems(new ArrayList<Person>());
 		else
-			grid.setItems(personRepository.findByNameStartsWithIgnoreCaseOrderByNameAsc("%"+filterText.trim()));
+			grid.setItems(personRepository.findByNameStartsWithIgnoreCaseAndCenterOrderByNameAsc("%"+filterText.trim(), CurrentUser.getCurrentCenter()));
 	}
 }

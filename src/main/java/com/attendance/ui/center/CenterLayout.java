@@ -1,12 +1,12 @@
-package com.attendance.ui.activity;
+package com.attendance.ui.center;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.attendance.backend.model.Activity;
-import com.attendance.backend.repository.ActivityRepository;
-import com.attendance.backend.repository.AttendanceRepository;
+import com.attendance.backend.model.Center;
+import com.attendance.backend.model.User;
+import com.attendance.backend.repository.CenterRepository;
+import com.attendance.backend.repository.UserRepository;
 import com.attendance.ui.authentication.CurrentUser;
-import com.attendance.ui.util.IntegerConverter;
 import com.attendance.ui.util.SafeButton;
 import com.vaadin.data.BeanValidationBinder;
 import com.vaadin.data.Binder;
@@ -16,7 +16,6 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.Page;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
-import com.vaadin.ui.Accordion;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -30,35 +29,29 @@ import com.vaadin.ui.themes.ValoTheme;
 
 @SpringComponent
 @UIScope
-public class ActivityLayout extends CssLayout {
+public class CenterLayout extends CssLayout {
 
 	private static final long serialVersionUID = 1L;
 
     /** Dependences */
-	@Autowired private ActivityRepository activityRepository;
-	@Autowired private AttendanceRepository attendanceRepository;
+	@Autowired private CenterRepository centerRepository;
+	@Autowired private UserRepository userRepository;
 
     /** Components */
-	private Label labelCenter = new Label();
 	private Label labelId = new Label();
-	private Label labelTotalAttendance = new Label();
 	private TextField name = new TextField("Nome");
-	private TextField nameComplement = new TextField("Complemento");
 	private TextField description = new TextField("Descrição");
-    private CheckBox checkTitleRequired = new CheckBox("Requer título na marcação");
-	private TextField personSuggestionByEvents = new TextField("Últimos eventos");
-	private TextField personSuggestionByDays = new TextField("Últimos dias");
-	private TextField resumoMensalId = new TextField("Id");
+	private CheckBox checkDefault = new CheckBox();
     private Button buttonSave = new Button("Salvar");
     private Button buttonCancel = new Button("Cancelar");
-    private SafeButton buttonDelete = new SafeButton("Excluir", "Confirma a exclusão da atividade?");
+    private SafeButton buttonDelete = new SafeButton("Excluir", "Confirma a exclusão do Centro?");
 
-    private Binder<Activity> binder = new BeanValidationBinder<>(Activity.class);
+	private Binder<Center> binder = new BeanValidationBinder<>(Center.class);
 
-    private ActivityView parentView;
-	private Activity current;
+	private CenterView parentView;
+	private Center current;
 	
-	public ActivityLayout() {
+	public CenterLayout() {
 		
 		buildLayout();
 		configureComponents();
@@ -71,31 +64,21 @@ public class ActivityLayout extends CssLayout {
     	
     	setStyleName("product-form-wrapper");
     	
-    	VerticalLayout vertical = new VerticalLayout(labelCenter, labelTotalAttendance, labelId, name, nameComplement, description, checkTitleRequired);
+    	VerticalLayout vertical = new VerticalLayout(labelId, name, description, checkDefault, buttonSave, buttonCancel, buttonDelete, buttonDelete);
     	vertical.setMargin(false);
     	vertical.setStyleName("form-layout");
-    	
-    	VerticalLayout abaSuggestion = new VerticalLayout(personSuggestionByEvents, personSuggestionByDays);
-    	VerticalLayout abaResumoMensal = new VerticalLayout(resumoMensalId);
-    	Accordion accordion = new Accordion();
-        accordion.addTab(abaSuggestion, "Sugerir Pessoas", VaadinIcons.CHECK_SQUARE_O);
-        accordion.addTab(abaResumoMensal, "Resumo Mensal", VaadinIcons.FILE_TEXT_O);
-        vertical.addComponents(accordion, buttonSave, buttonCancel, buttonDelete, buttonDelete);
     	
     	addComponent(vertical);
 	}
 	private void configureComponents() {
         
 		// bind using naming convention
-        binder.forField(personSuggestionByEvents).withConverter(new IntegerConverter()).bind("personSuggestionByEvents");
-        binder.forField(personSuggestionByDays).withConverter(new IntegerConverter()).bind("personSuggestionByDays");
-        binder.forField(resumoMensalId).withConverter(new IntegerConverter()).bind("resumoMensalId");
         binder.bindInstanceFields(this);
 
 		name.setSizeFull();
-		nameComplement.setSizeFull();
 		description.setSizeFull();
-    	checkTitleRequired.setSizeFull();
+		checkDefault.setSizeFull();
+		checkDefault.setCaptionAsHtml(true);
 		
 		buttonSave.addStyleName(ValoTheme.BUTTON_PRIMARY);
         buttonCancel.addStyleName("cancel");
@@ -103,10 +86,14 @@ public class ActivityLayout extends CssLayout {
         
         buttonSave.setClickShortcut(ShortcutAction.KeyCode.ENTER);
         buttonCancel.setClickShortcut(ShortcutAction.KeyCode.ESCAPE);
-
 	}
 
 	private void hookLogicToComponents() {
+
+		checkDefault.addValueChangeListener(e -> {
+		    String star =e.getValue() ? VaadinIcons.STAR.getHtml() : VaadinIcons.STAR_O.getHtml();
+		    checkDefault.setCaption(star + " Centro padrão");
+		});
 
 		buttonSave.addClickListener(e -> {
 			if (save()) parentView.enter(null);
@@ -128,9 +115,16 @@ public class ActivityLayout extends CssLayout {
 	}
 
 	private boolean save() {
-    	BinderValidationStatus<Activity> status = binder.validate();
+    	
+		this.updateCheckDefault(checkDefault.getValue());
+		
+    	//Center Owner Security
+		if(!current.isCurrentUserOwner())
+			return true;
+		
+		BinderValidationStatus<Center> status = binder.validate();
     	if(!status.hasErrors()){
-			activityRepository.save(current);
+    		centerRepository.save(current);
 			new Notification(null,"Atividade salva.", Notification.Type.HUMANIZED_MESSAGE, true).show(Page.getCurrent());
 			return true;
 		} else{
@@ -139,41 +133,65 @@ public class ActivityLayout extends CssLayout {
 		}
 	}
 
+	//TODO Remover @SuppressWarnings
+	@SuppressWarnings("unused")
 	private boolean delete() {
 
-		if (current.getTotalAttendance() == 0) {
-			activityRepository.delete(current);
+		//TODO Verificar se há pessoas ou atividades cadastradas
+		if (true) {
+			centerRepository.delete(current);
 			new Notification(null,"Atividade excluída.", Notification.Type.HUMANIZED_MESSAGE, true).show(Page.getCurrent());
 			return true;
 		} else {
-			new Notification(null, "Exclusão não permitidas, pois há presenças atreladas a atividade.", Notification.Type.WARNING_MESSAGE, true).show(Page.getCurrent());
+			new Notification(null, "Exclusão não permitidas, pois há pessoas e/ou atividades atreladas ao centro.", Notification.Type.WARNING_MESSAGE, true).show(Page.getCurrent());
 			return false;
 		}
 	}
 
-	public void enter(ActivityView parentView, Activity activity) {
+	public void enter(CenterView parentView, Center center) {
     	this.parentView = parentView;
-    	this.current = activity;
+    	this.current = center;
     	
-		final boolean persisted = activity.getId() != null;
+		final boolean persisted = center.getId() != null;
 		if(persisted){
-			current = activityRepository.findOne(activity.getId());
-			current.setTotalAttendance(attendanceRepository.findByActivity(current).size());
+			current = centerRepository.findOne(center.getId());
 		}else{
-			current = activity;
-			current.setCenter(CurrentUser.getCurrentCenter());
+			current = center;
 		}
 		
 		binder.setBean(current);
 
-		labelCenter.setValue("Centro: " + current.getCenter().getName());
-		labelTotalAttendance.setValue("Presenças: " + current.getTotalAttendance());
 	    labelId.setValue("Id: " + current.getId());
-		
+
+	    String star = current.isCurrentUserDefault() ? VaadinIcons.STAR.getHtml() : VaadinIcons.STAR_O.getHtml();
+	    checkDefault.setCaption(star + " Centro padrão");
+	    checkDefault.setValue(current.isCurrentUserDefault());
+	    
 		setVisible(true);
 
-		// A hack to ensure the whole form is visible
+    	//Center Owner Security
+	    name.setEnabled(current.isCurrentUserOwner());
+	    description.setEnabled(current.isCurrentUserOwner());
+	    buttonDelete.setVisible(current.isCurrentUserOwner());
+
+    	// A hack to ensure the whole form is visible
 		buttonSave.focus();
 		name.selectAll();
     }
+	
+	private void updateCheckDefault(boolean checked){
+	    User currentUserDB = userRepository.findOne(CurrentUser.getUser().getId());
+	    if(checked){
+	    	currentUserDB.setDefaultCenter(current);
+		    userRepository.save(currentUserDB);
+		    CurrentUser.getUser().setDefaultCenter(current);
+	    }else{
+	    	currentUserDB.setDefaultCenter(null);
+		    userRepository.save(currentUserDB);
+		    CurrentUser.getUser().setDefaultCenter(null);
+	    }
+	    
+    	parentView.loadGrid();
+	}
+
 }
