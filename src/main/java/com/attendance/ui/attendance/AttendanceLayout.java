@@ -13,7 +13,6 @@ import com.attendance.backend.model.Activity;
 import com.attendance.backend.model.ActivityAttendance;
 import com.attendance.backend.model.Attendance;
 import com.attendance.backend.model.Person;
-import com.attendance.backend.model.SharingType;
 import com.attendance.backend.repository.ActivityAttendanceRepository;
 import com.attendance.backend.repository.ActivityRepository;
 import com.attendance.backend.repository.AttendanceRepository;
@@ -167,7 +166,7 @@ public class AttendanceLayout extends CssLayout {
 	private void refreshEditModeComponents(){
     	
     	//security
-    	if(!CurrentUser.isUserInRoleAndActivity(SharingType.ATTENDANCE_WRITE, currentActivity)) editMode = false;
+    	if(!CurrentUser.isUserInActivityWrite(currentActivity)) editMode = false;
 		
 		fieldDate.setEnabled(!editMode);
 		fieldTitle.setEnabled(editMode);

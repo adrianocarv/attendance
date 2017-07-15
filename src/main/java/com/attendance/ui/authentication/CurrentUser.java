@@ -58,47 +58,30 @@ public final class CurrentUser {
     }
     
 	public static boolean isUserInRole(SharingType type) {
-		if(getUser() == null)
-			return false;
+		return isUserInRole(type, null);
+	}
+
+	public static boolean isUserInActivityRead(Activity activity) {
+		return isUserInRole(SharingType.ATTENDANCE_READ, activity);
+	}
+
+	public static boolean isUserInActivityWrite(Activity activity) {
+		return isUserInRole(SharingType.ATTENDANCE_WRITE, activity);
+	}
+
+	private static boolean isUserInRole(SharingType type, Activity activity) {
 		
+		//Onwer Center has priority
 		if(getCurrentCenter().isCurrentUserOwner())
 			return true;
-		
+
 		for(Sharing sharing : getUser().getSharings()){
-			if(sharing.matches(type, getCurrentCenter()))
+			if(sharing.matches(type, activity))
 				return true;
 		}
-		
 		return false;
 	}
 
-	public static boolean isUserInActivity(Activity activity) {
-		if(getUser() == null)
-			return false;
-		
-		for(Sharing sharing : getUser().getSharings()){
-			if(sharing.matches(SharingType.ATTENDANCE_READ, getCurrentCenter(), activity))
-				return true;
-		}
-		
-		return false;
-	}
-
-	public static boolean isUserInRoleAndActivity(SharingType type, Activity activity) {
-		
-		if(type == null || activity == null)
-			return false;
-		
-		for(Sharing sharing : getUser().getSharings()){
-			boolean inCurrentCenter = getCurrentCenter().getId() == sharing.getSharingCenter().getId();
-			boolean inRole = type == sharing.getType();
-			boolean inActivity = sharing.isSharingCenter() || activity.getId() == sharing.getActivity().getId();
-			if(inCurrentCenter && inRole && inActivity)
-				return true;
-		}
-		return false;
-	}
-	
 	/**
      * Sets the name of the current user and stores it in the current session.
      * Using a {@code null} username will remove the username from the session.

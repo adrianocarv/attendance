@@ -1,4 +1,25 @@
 ********************
+Version 2.1.1-RC-01:
+
+Bugs:
+
+	- Autorização: Correção erros e Refactoring 
+
+Features:
+
+
+********************
+Version 2.1.0-RC-01:
+
+Bugs:
+
+
+Features:
+
+	- Autorização
+
+
+********************
 Version 2.0.0-RC-01:
 
 Bugs:

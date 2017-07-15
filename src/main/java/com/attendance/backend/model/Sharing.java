@@ -7,6 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import com.attendance.ui.authentication.CurrentUser;
+
 @Entity
 public class Sharing {
 
@@ -41,15 +43,19 @@ public class Sharing {
 		this.statusTime = new Timestamp(System.currentTimeMillis());
 	}
 	
-	public boolean matches(SharingType type, Center center){
+	public boolean matches(SharingType type, Activity activity){
 
-		//nulls verifications
-		if(type == null || center == null || this.type == null || this.getSharingCenter() == null )
+		if(type == null)
 			return false;
 		
 		//validate center
-		if(this.getSharingCenter().getId() != center.getId())
+		if(this.getSharingCenter().getId() != CurrentUser.getCurrentCenter().getId())
 			return false;
+
+		return activity == null ? this.matches(type) : this.matchesActivity(type, activity);
+	}
+
+	private boolean matches(SharingType type){
 
 		//validate type
 		if(this.type == type)
@@ -62,30 +68,31 @@ public class Sharing {
 		return false;
 	}
 	
-	public boolean matches(SharingType type, Center center, Activity activity){
+	private boolean matchesActivity(SharingType type, Activity activity){
 
-		//Center has priority
-		if(this.isSharingCenter()) 
-			return this.matches(type, center);
-		
-		//First verification
-		if(!this.matches(type, center))
-			return false;
-		
-		//null verifications
-		if(activity == null)
-			return false;
+		//sharing center has priority
+		if(this.isSharingCenter())
+			return this.matches(type);
 		
 		//validate activity
-		return this.activity.getId() == activity.getId();
+		if(this.activity.getId() != activity.getId())
+			return false;
+		
+		//validate type
+		if(this.type == type)
+			return true;
+
+		if(this.type == SharingType.ATTENDANCE_WRITE && type == SharingType.ATTENDANCE_READ) return true;
+		
+		return false;
 	}
 	
-	public Center getSharingCenter(){
-		return isSharingCenter() ? this.center : this.activity.getCenter();
+	private boolean isSharingCenter(){
+		return this.activity == null && this.center != null;
 	}
 	
-	public boolean isSharingCenter(){
-		return this.center != null && this.activity == null;
+	private Center getSharingCenter(){
+		return this.isSharingCenter() ? this.getCenter() : this.activity.getCenter();
 	}
 	
 	//accessors

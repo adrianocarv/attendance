@@ -93,7 +93,7 @@ public class AttendanceView extends CssLayout implements View {
 		List<Activity> sharing = new ArrayList<Activity>();
 		
 		for(Activity a : all){
-			if(CurrentUser.isUserInActivity(a)){
+			if(CurrentUser.isUserInActivityRead(a)){
 				sharing.add(a);
 			}
 		}
