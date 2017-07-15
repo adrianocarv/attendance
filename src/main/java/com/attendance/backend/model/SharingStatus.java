@@ -1,7 +1,7 @@
 package com.attendance.backend.model;
 
 public enum SharingStatus {
-	INVITED("Convidado"), ACCEPTED("Aceito");
+	INVITED("Convidado"), ACCEPTED("Aceito"), REJECTED("Rejeitado");
 
     private final String name;
 

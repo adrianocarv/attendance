@@ -21,10 +21,74 @@ public class Sharing {
 	protected Sharing() {
 	}
 
-	public Sharing(long id) {
+	public Sharing(Long id) {
 		this.id = id;
 	}
 
+	public Sharing(User user, SharingType type, Center center) {
+		this.user = user;
+		this.type = type;
+		this.center = center;
+		this.status = SharingStatus.ACCEPTED;
+		this.statusTime = new Timestamp(System.currentTimeMillis());
+	}
+	
+	public Sharing(User user, SharingType type, Activity activity) {
+		this.user = user;
+		this.type = type;
+		this.activity = activity;
+		this.status = SharingStatus.ACCEPTED;
+		this.statusTime = new Timestamp(System.currentTimeMillis());
+	}
+	
+	public boolean matches(SharingType type, Center center){
+
+		//nulls verifications
+		if(type == null || center == null || this.type == null || this.getSharingCenter() == null )
+			return false;
+		
+		//validate center
+		if(this.getSharingCenter().getId() != center.getId())
+			return false;
+
+		//validate type
+		if(this.type == type)
+			return true;
+		
+		if(this.type == SharingType.ATTENDANCE_WRITE && type == SharingType.ATTENDANCE_READ) return true;
+		if(this.type == SharingType.PERSON_WRITE && type == SharingType.PERSON_READ) return true;
+		if(this.type == SharingType.ACTIVITY_WRITE && type == SharingType.ACTIVITY_READ) return true;
+
+		return false;
+	}
+	
+	public boolean matches(SharingType type, Center center, Activity activity){
+
+		//Center has priority
+		if(this.isSharingCenter()) 
+			return this.matches(type, center);
+		
+		//First verification
+		if(!this.matches(type, center))
+			return false;
+		
+		//null verifications
+		if(activity == null)
+			return false;
+		
+		//validate activity
+		return this.activity.getId() == activity.getId();
+	}
+	
+	public Center getSharingCenter(){
+		return isSharingCenter() ? this.center : this.activity.getCenter();
+	}
+	
+	public boolean isSharingCenter(){
+		return this.center != null && this.activity == null;
+	}
+	
+	//accessors
 	public Long getId() {
 		return id;
 	}

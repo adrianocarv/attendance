@@ -3,6 +3,7 @@ package com.attendance.ui.authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.attendance.backend.model.User;
+import com.attendance.backend.repository.SharingRepository;
 import com.attendance.backend.repository.SharingUserRepository;
 import com.attendance.backend.repository.UserRepository;
 import com.vaadin.spring.annotation.SpringComponent;
@@ -15,6 +16,7 @@ public class DBAccessControl implements AccessControl {
     /** Dependences */
 	@Autowired private UserRepository userRepository;
     @Autowired private SharingUserRepository sharingUserRepository;
+    @Autowired private SharingRepository sharingRepository;
 
 	@Override
     public boolean signIn(String username, String password) {
@@ -29,6 +31,7 @@ public class DBAccessControl implements AccessControl {
 		
 		CurrentUser.set(user);
 		user.setCenters(sharingUserRepository.findCurrentUserCenters());
+		user.setSharings(sharingRepository.findByUser(CurrentUser.getUser()));
         
         return true;
     }
@@ -40,18 +43,11 @@ public class DBAccessControl implements AccessControl {
 
     @Override
     public boolean isUserInRole(String role) {
-    	if ("admin".equals(role)) {
-            // Only the "admin" user is in the "admin" role
-            return getPrincipalName().equals("admin");
-        }
-
-        // All users are in all non-admin roles
-        return true;
+        return false;
     }
 
     @Override
     public String getPrincipalName() {
         return CurrentUser.get();
     }
-
 }

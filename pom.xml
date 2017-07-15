@@ -85,6 +85,14 @@
 	            <directory>src/main/resources</directory>
 	            <includes>
 	                <include>application.properties</include>
+	                <include>application-prod.properties</include>
+	            </includes>
+	        </resource>
+	        <resource>
+	            <filtering>true</filtering>
+	            <directory>src/main/webapp</directory>
+	            <includes>
+	                <include>VAADIN/**</include>
 	            </includes>
 	        </resource>
 	    </resources>

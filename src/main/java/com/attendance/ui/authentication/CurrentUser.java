@@ -2,7 +2,10 @@ package com.attendance.ui.authentication;
 
 import java.util.List;
 
+import com.attendance.backend.model.Activity;
 import com.attendance.backend.model.Center;
+import com.attendance.backend.model.Sharing;
+import com.attendance.backend.model.SharingType;
 import com.attendance.backend.model.User;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinService;
@@ -43,18 +46,60 @@ public final class CurrentUser {
 
     public static User getUser() {
     	User currentUser = (User) getCurrentRequest().getWrappedSession().getAttribute(CURRENT_USER_SESSION_ATTRIBUTE_KEY);
-    	return currentUser;
+    	return currentUser != null ? currentUser : new User(-1L);
     }
     
     public static Center getCurrentCenter() {
-    	return getUser() != null ? getUser().getCurrentCenter() : new Center(-1L);
+    	return getUser().getId() != -1 ? getUser().getCurrentCenter() : new Center(-1L);
     }
     
     public static List<Center> getCenters() {
     	return getUser().getCenters();
     }
     
-    /**
+	public static boolean isUserInRole(SharingType type) {
+		if(getUser() == null)
+			return false;
+		
+		if(getCurrentCenter().isCurrentUserOwner())
+			return true;
+		
+		for(Sharing sharing : getUser().getSharings()){
+			if(sharing.matches(type, getCurrentCenter()))
+				return true;
+		}
+		
+		return false;
+	}
+
+	public static boolean isUserInActivity(Activity activity) {
+		if(getUser() == null)
+			return false;
+		
+		for(Sharing sharing : getUser().getSharings()){
+			if(sharing.matches(SharingType.ATTENDANCE_READ, getCurrentCenter(), activity))
+				return true;
+		}
+		
+		return false;
+	}
+
+	public static boolean isUserInRoleAndActivity(SharingType type, Activity activity) {
+		
+		if(type == null || activity == null)
+			return false;
+		
+		for(Sharing sharing : getUser().getSharings()){
+			boolean inCurrentCenter = getCurrentCenter().getId() == sharing.getSharingCenter().getId();
+			boolean inRole = type == sharing.getType();
+			boolean inActivity = sharing.isSharingCenter() || activity.getId() == sharing.getActivity().getId();
+			if(inCurrentCenter && inRole && inActivity)
+				return true;
+		}
+		return false;
+	}
+	
+	/**
      * Sets the name of the current user and stores it in the current session.
      * Using a {@code null} username will remove the username from the session.
      * 

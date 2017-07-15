@@ -35,7 +35,10 @@ public class LoginScreen extends CssLayout {
         this.loginListener = loginListener;
         this.accessControl = accessControl;
         buildUI();
-        password.focus();
+
+		// A hack to ensure the whole form is visible
+        username.focus();
+        username.selectAll();
     }
 
     private void buildUI() {
@@ -123,7 +126,8 @@ public class LoginScreen extends CssLayout {
         	loginListener.loginSuccessful();
         } else {
             showNotification(new Notification("Falha no login", "Por favor, verifique seu username e senha e tente novamente.", Notification.Type.HUMANIZED_MESSAGE));
-            password.focus();
+            username.focus();
+            username.selectAll();
         }
     }
 

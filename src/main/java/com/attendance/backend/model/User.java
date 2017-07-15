@@ -20,6 +20,7 @@ public class User {
     private @ManyToOne Center defaultCenter;
 
     private @Transient List<Center> centers = new ArrayList<Center>();
+    private @Transient List<Sharing> sharings = new ArrayList<Sharing>();
     private @Transient Center currentCenter;
 
     protected User() {
@@ -111,5 +112,13 @@ public class User {
 
 	public void setCurrentCenter(Center currentCenter) {
 		this.currentCenter = currentCenter;
+	}
+
+	public List<Sharing> getSharings() {
+		return sharings;
+	}
+
+	public void setSharings(List<Sharing> sharings) {
+		this.sharings = sharings;
 	}
 }

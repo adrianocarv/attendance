@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.attendance.backend.model.Person;
+import com.attendance.backend.model.SharingType;
 import com.attendance.backend.repository.PersonRepository;
 import com.attendance.ui.authentication.CurrentUser;
 import com.vaadin.icons.VaadinIcons;
@@ -99,6 +100,10 @@ public class PersonView extends CssLayout implements View {
 
     @Override
     public void enter(ViewChangeEvent event) {
+
+    	//security
+    	buttonNew.setVisible(CurrentUser.isUserInRole(SharingType.PERSON_WRITE));
+
     	grid.setVisible(true);
     	personLayout.setVisible(false);
 
@@ -109,7 +114,10 @@ public class PersonView extends CssLayout implements View {
 
 	private void loadGrid(String filterText) {
 
-		if (StringUtils.isEmpty(filterText))
+    	//security
+    	if(!CurrentUser.isUserInRole(SharingType.PERSON_READ)) return;
+
+    	if (StringUtils.isEmpty(filterText))
 			grid.setItems(new ArrayList<Person>());
 		else
 			grid.setItems(personRepository.findByNameStartsWithIgnoreCaseAndCenterOrderByNameAsc("%"+filterText.trim(), CurrentUser.getCurrentCenter()));

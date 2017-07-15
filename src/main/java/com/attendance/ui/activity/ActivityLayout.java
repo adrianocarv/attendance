@@ -3,6 +3,7 @@ package com.attendance.ui.activity;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.attendance.backend.model.Activity;
+import com.attendance.backend.model.SharingType;
 import com.attendance.backend.repository.ActivityRepository;
 import com.attendance.backend.repository.AttendanceRepository;
 import com.attendance.ui.authentication.CurrentUser;
@@ -152,6 +153,11 @@ public class ActivityLayout extends CssLayout {
 	}
 
 	public void enter(ActivityView parentView, Activity activity) {
+
+		//security
+    	buttonSave.setVisible(CurrentUser.isUserInRole(SharingType.ACTIVITY_WRITE));
+    	buttonDelete.setVisible(CurrentUser.isUserInRole(SharingType.ACTIVITY_WRITE));
+
     	this.parentView = parentView;
     	this.current = activity;
     	

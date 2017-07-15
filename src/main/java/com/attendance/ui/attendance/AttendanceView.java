@@ -1,8 +1,12 @@
 package com.attendance.ui.attendance;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.attendance.backend.model.Activity;
+import com.attendance.backend.model.SharingType;
 import com.attendance.backend.repository.ActivityRepository;
 import com.attendance.ui.authentication.CurrentUser;
 import com.vaadin.navigator.View;
@@ -59,6 +63,7 @@ public class AttendanceView extends CssLayout implements View {
 		grid.setSelectionMode(SelectionMode.SINGLE);
 	}
 
+	
 	private void hookLogicToComponents() {
 		grid.asSingleSelect().addValueChangeListener(e -> {
 			if(e.getValue() == null) return;
@@ -69,13 +74,29 @@ public class AttendanceView extends CssLayout implements View {
 
     @Override
     public void enter(ViewChangeEvent event) {
+    	
+    	//security
+    	if(!CurrentUser.isUserInRole(SharingType.ATTENDANCE_READ)) return;
+    	
     	vertical.setVisible(true);
     	attendanceLayout.setVisible(false);
 
-    	grid.setItems(activityRepository.findByCenter(CurrentUser.getCurrentCenter()));
+    	grid.setItems(this.findSharingActivities());
     }
 
-	public VerticalLayout getVertical() {
+	VerticalLayout getVertical() {
 		return vertical;
+	}
+	
+	private List<Activity> findSharingActivities(){
+		List<Activity> all = activityRepository.findByCenter(CurrentUser.getCurrentCenter());		
+		List<Activity> sharing = new ArrayList<Activity>();
+		
+		for(Activity a : all){
+			if(CurrentUser.isUserInActivity(a)){
+				sharing.add(a);
+			}
+		}
+		return sharing;
 	}
 }

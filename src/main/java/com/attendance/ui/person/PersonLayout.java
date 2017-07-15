@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.attendance.backend.model.Person;
 import com.attendance.backend.model.PersonStatus;
+import com.attendance.backend.model.SharingType;
 import com.attendance.backend.repository.AttendanceRepository;
 import com.attendance.backend.repository.PersonRepository;
 import com.attendance.ui.authentication.CurrentUser;
@@ -173,8 +174,8 @@ public class PersonLayout extends CssLayout {
         
     	checkUniversitario.setSizeFull();
     	checkColegial.setSizeFull();
-    	//checkCooperador.setSizeFull();
-    	//checkCooperadorDate.setSizeFull();
+    	checkCooperador.setSizeFull();
+    	checkCooperadorDate.setSizeFull();
     	checkContribui.setSizeFull();
     	checkContribuiValue.setSizeFull();
         
@@ -250,6 +251,11 @@ public class PersonLayout extends CssLayout {
 	}
 
 	public void enter(PersonView parentView, Person person) {
+
+		//security
+    	buttonSave.setVisible(CurrentUser.isUserInRole(SharingType.PERSON_WRITE));
+    	buttonDelete.setVisible(CurrentUser.isUserInRole(SharingType.PERSON_WRITE));
+    	
     	this.parentView = parentView;
     	this.current = person;
     	

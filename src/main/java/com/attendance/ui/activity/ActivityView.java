@@ -3,6 +3,7 @@ package com.attendance.ui.activity;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.attendance.backend.model.Activity;
+import com.attendance.backend.model.SharingType;
 import com.attendance.backend.repository.ActivityRepository;
 import com.attendance.ui.authentication.CurrentUser;
 import com.vaadin.icons.VaadinIcons;
@@ -85,6 +86,11 @@ public class ActivityView extends CssLayout implements View {
 
     @Override
     public void enter(ViewChangeEvent event) {
+
+    	//security
+    	buttonNew.setVisible(CurrentUser.isUserInRole(SharingType.ACTIVITY_WRITE));
+    	if(!CurrentUser.isUserInRole(SharingType.ACTIVITY_READ)) return;
+
     	grid.setVisible(true);
     	activityLayout.setVisible(false);
 
