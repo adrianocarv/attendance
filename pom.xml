@@ -6,7 +6,7 @@
 
     <groupId>com.attendance</groupId>
     <artifactId>attendance</artifactId>
-    <version>2.1.1-RC-01</version>
+    <version>2.2.0-RC-01</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -18,6 +18,12 @@
 		<java.version>1.8</java.version>
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<maven.build.timestamp.format>dd/MM/yyyy HH:mm</maven.build.timestamp.format>
+		<app-file-name>${project.artifactId}-${project.version}.jar</app-file-name>
+		<ftp-server>192.241.180.208</ftp-server>
+		<ftp-port>25800</ftp-port>
+		<ftp-userid>adrianocarv</ftp-userid>
+		<ftp-password>@a8859662</ftp-password>
+		<ftp-remotedir>/home/adrianocarv</ftp-remotedir>
     </properties>
 
 	<dependencies>
@@ -70,7 +76,7 @@
             <dependency>
                 <groupId>com.vaadin</groupId>
                 <artifactId>vaadin-bom</artifactId>
-                <version>8.0.6</version>
+                <version>8.0.7</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -101,6 +107,48 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+			<plugin>
+			    <inherited>false</inherited>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-antrun-plugin</artifactId>
+			    <executions>
+			        <execution>
+			            <id>deploy-on-server</id>
+			            <phase>install</phase>
+			            <goals>
+			                <goal>run</goal>
+			            </goals>
+			            <configuration>
+			                <target name="deploy-on-server" description="how to get antrun plugin to work with SCP and SSH">
+			                    <echo message="Tansferring App file... ${app-file-name}" />
+			                    <!-- file to be transferred -->
+								<scp todir="${ftp-userid}@${ftp-server}:${ftp-remotedir}" port="${ftp-port}" password="${ftp-password}" trust="true">
+									<fileset file="target/${app-file-name}" />
+								</scp>
+ 			                    <echo message="&#xa;&#xa;Copie a linha abaixo e execute no ternimal:&#xa;./attendance-startup.sh ${app-file-name}&#xa;&#xa;&#xa;" />
+			                    <!-- remote host and the command to be executed there
+			                    <sshexec trust="true" failonerror="true" host="${ftp-server}" port="${ftp-port}" username="${ftp-userid}" password="${ftp-password}" command="./attendance-startup.sh ${app-file-name}" timeout="120000" />
+			                    <taskdef name="scp" classname="org.apache.tools.ant.taskdefs.optional.ssh.Scp">
+			                        <classpath refid="maven.plugin.classpath" />
+			                    </taskdef>
+			                     -->
+			                </target>
+			            </configuration>
+			        </execution>
+			    </executions>
+			    <dependencies>
+			        <dependency>
+			            <groupId>ant</groupId>
+			            <artifactId>ant-commons-net</artifactId>
+			            <version>1.6.5</version>
+			        </dependency>
+			        <dependency>
+			            <groupId>org.apache.ant</groupId>
+			            <artifactId>ant-jsch</artifactId>
+			            <version>1.9.1</version>
+			        </dependency>
+			    </dependencies>
+			</plugin>              
         </plugins>
     </build>
 

@@ -8,7 +8,3 @@ git add .
 git commit -m "Version 2.1.1-RC-01"
 git push heroku master
 heroku open
-
-
-
-jdk8/jre1.8.0_111/bin/java -Dserver.port=8081 -jar attendance-2.1.1-RC-01.jar &

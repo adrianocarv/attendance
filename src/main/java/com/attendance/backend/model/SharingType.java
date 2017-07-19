@@ -7,8 +7,8 @@ public enum SharingType {
 	PERSON_WRITE("Gerenciar pessoas"),
 	ACTIVITY_READ("Visualizar atividades"),
 	ACTIVITY_WRITE("Gerenciar atividades"),
-	SHARING_ACTIVITY("Compartilhar atividades"),
-	SHARING_CENTER("Compartilhar centro");
+	SHARING_CENTER("Compartilhar centro"),
+	SHARING_ACTIVITY("Compartilhar atividades");
 
 	private final String name;
 

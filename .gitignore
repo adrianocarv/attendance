@@ -1,3 +1,9 @@
+# =========================
+# Password properties
+# =========================
+application.properties
+pom.xml
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db

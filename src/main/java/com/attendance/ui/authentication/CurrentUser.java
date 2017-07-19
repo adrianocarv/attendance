@@ -50,13 +50,22 @@ public final class CurrentUser {
     }
     
     public static Center getCurrentCenter() {
-    	return getUser().getId() != -1 ? getUser().getCurrentCenter() : new Center(-1L);
+    	Center currentCenter = getUser().getCurrentCenter();
+    	return currentCenter != null ? currentCenter : new Center(-1L);
     }
     
     public static List<Center> getCenters() {
     	return getUser().getCenters();
     }
     
+	public static boolean isUserInRolesOR(SharingType... types) {
+
+		for (SharingType type : types)
+			if(isUserInRole(type)) return true;
+
+		return false;
+	}
+
 	public static boolean isUserInRole(SharingType type) {
 		return isUserInRole(type, null);
 	}

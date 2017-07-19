@@ -1,4 +1,16 @@
 ********************
+Version 2.2.0-RC-01:
+
+Bugs:
+
+
+Features:
+
+	- CRUD: Sharing 
+	- Deploy automático no servidor de produção 
+
+
+********************
 Version 2.1.1-RC-01:
 
 Bugs:

@@ -113,6 +113,7 @@ public class Menu extends CssLayout {
 
     	selectCurrentUserCenters.addValueChangeListener(e -> {
 		    if(e.getValue() == null || e.getValue() == e.getOldValue()) return;
+
 		    CurrentUser.getUser().setCurrentCenter(e.getValue());
 	    	this.title.setValue(CurrentUser.getCurrentCenter().getName());
             
@@ -205,7 +206,7 @@ public class Menu extends CssLayout {
         menuPart.removeStyleName(VALO_MENU_VISIBLE);
     }
     
-    void loadMenuUserSection(){
+    void loadUserSection(){
     	this.title.setValue(CurrentUser.getCurrentCenter().getName());
     	this.username.setValue(CurrentUser.get());
     	this.selectCurrentUserCenters.setItems(CurrentUser.getCenters());

@@ -5,11 +5,19 @@ import javax.servlet.annotation.WebServlet;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.attendance.backend.model.SharingType;
+import com.attendance.backend.repository.SharingRepository;
+import com.attendance.backend.repository.SharingUserRepository;
+import com.attendance.ui.about.AboutView;
+import com.attendance.ui.activity.ActivityView;
 import com.attendance.ui.attendance.AttendanceView;
 import com.attendance.ui.authentication.AccessControl;
+import com.attendance.ui.authentication.CurrentUser;
 import com.attendance.ui.authentication.DBAccessControl;
 import com.attendance.ui.authentication.LoginScreen;
 import com.attendance.ui.authentication.LoginScreen.LoginListener;
+import com.attendance.ui.person.PersonView;
+import com.attendance.ui.sharing.SharingView;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.annotations.Viewport;
@@ -35,15 +43,16 @@ public class MyUI extends UI {
 
 	private static final long serialVersionUID = 1L;
 
-	@Autowired
-	private DBAccessControl accessControl;
+    /** Dependences */
+    @Autowired private SharingUserRepository sharingUserRepository;
+    @Autowired private SharingRepository sharingRepository;
+    @Autowired private DBAccessControl accessControl;
 
 	private final MainScreen mainScreen;
 	
 	@Autowired
 	public MyUI(MainScreen mainScreen) {
 		this.mainScreen = mainScreen;
-		this.mainScreen.makeScreen(MyUI.this);
 	}
 	
 	@Override
@@ -66,13 +75,25 @@ public class MyUI extends UI {
 
     protected void showMainView() {
 
-    	this.mainScreen.loadMenuUserSection();
+    	this.makeUserScreen();
+    	
+    	System.out.println("showMainView() - " + getNavigator().getState());
     	
     	addStyleName(ValoTheme.UI_WITH_MENU);
         setContent(mainScreen);
 
+        getNavigator().navigateTo(this.getViewToNavigate());
+    }
+    
+    private String getViewToNavigate(){
         String viewName = StringUtils.isEmpty(getNavigator().getState()) ? AttendanceView.VIEW_NAME : getNavigator().getState();
-        getNavigator().navigateTo(viewName);
+
+        if(viewName.equals(AttendanceView.VIEW_NAME) && !CurrentUser.isUserInRole(SharingType.ATTENDANCE_READ)) return AboutView.VIEW_NAME;
+        if(viewName.equals(PersonView.VIEW_NAME) && !CurrentUser.isUserInRole(SharingType.PERSON_READ)) return AboutView.VIEW_NAME;
+        if(viewName.equals(ActivityView.VIEW_NAME) && !CurrentUser.isUserInRole(SharingType.ACTIVITY_READ)) return AboutView.VIEW_NAME;
+        if(viewName.equals(SharingView.VIEW_NAME) && !CurrentUser.isUserInRolesOR(SharingType.SHARING_CENTER, SharingType.SHARING_ACTIVITY)) return AboutView.VIEW_NAME;
+        
+        return viewName;
     }
     
     public static MyUI get() {
@@ -88,4 +109,14 @@ public class MyUI extends UI {
     public static class MyUIServlet extends VaadinServlet {
     	private static final long serialVersionUID = 1L;
     }
+    
+    private void makeUserScreen(){
+
+    	//Update User Sharings
+    	CurrentUser.getUser().setCenters(sharingUserRepository.findCurrentUserCenters());
+    	CurrentUser.getUser().setSharings(sharingRepository.findByUser(CurrentUser.getUser()));
+
+		this.mainScreen.makeScreen(MyUI.this);
+    }
+
 }

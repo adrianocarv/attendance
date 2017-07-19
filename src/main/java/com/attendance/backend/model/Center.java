@@ -32,7 +32,7 @@ public class Center {
 	}
 
 	public boolean isCurrentUserOwner(){
-		return owner != null && owner.getId() == CurrentUser.getUser().getId();
+		return (this.id == null || this.id != -1) && owner != null && owner.getId() == CurrentUser.getUser().getId();
 	}
 	
 	public boolean isCurrentUserDefault(){

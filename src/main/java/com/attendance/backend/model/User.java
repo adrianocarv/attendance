@@ -8,16 +8,20 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.Email;
 
 @Entity
 public class User {
 
     private @Id @GeneratedValue Long id;
-	private String username;
+	private @NotNull String username;
 	private String name;
-	private String email;
+	private @NotNull @Email String email;
 	private String password;
     private @ManyToOne Center defaultCenter;
+    private @NotNull boolean activated;
 
     private @Transient List<Center> centers = new ArrayList<Center>();
     private @Transient List<Sharing> sharings = new ArrayList<Sharing>();
@@ -30,8 +34,8 @@ public class User {
 		this.id = id;
 	}
 
-	public User(String username) {
-		this.username = username;
+	public User(String email) {
+		this.email = email;
 	}
 
 	public Center getCurrentCenter(){
@@ -51,6 +55,31 @@ public class User {
 		
 		this.currentCenter = this.centers.get(0);
 		return this.currentCenter;
+	}
+	
+	public boolean hasSharing(Center center, SharingType type){
+		return this.hasSharing(center, type, null);
+	}
+	
+	public boolean hasSharing(Center center, SharingType type, Activity activity){
+		if(type == null || center == null)
+			return false;
+		
+		for(Sharing s : this.sharings){
+			
+			if( (activity == null && !s.isSharingCenter()) || (activity != null && s.isSharingCenter()) )
+				continue;
+
+			if(s.getCenter().getId() != center.getId() || s.getType() != type) 
+				continue;
+
+			if(!s.isSharingCenter() && s.getActivity().getId() != activity.getId()) 
+				continue;
+
+			return true;
+		}
+
+		return false;
 	}
 	
 	//accessors
@@ -120,5 +149,13 @@ public class User {
 
 	public void setSharings(List<Sharing> sharings) {
 		this.sharings = sharings;
+	}
+
+	public boolean isActivated() {
+		return activated;
+	}
+
+	public void setActivated(boolean activated) {
+		this.activated = activated;
 	}
 }

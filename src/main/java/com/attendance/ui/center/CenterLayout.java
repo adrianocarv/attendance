@@ -124,10 +124,16 @@ public class CenterLayout extends CssLayout {
 		
 		BinderValidationStatus<Center> status = binder.validate();
     	if(!status.hasErrors()){
+
     		centerRepository.save(current);
 			new Notification(null,"Atividade salva.", Notification.Type.HUMANIZED_MESSAGE, true).show(Page.getCurrent());
-			return true;
-		} else{
+
+	    	//Update User Sharings
+	    	if(CurrentUser.getCenters().size() == 1) CurrentUser.getUser().setCurrentCenter(current);
+
+	    	return true;
+
+    	} else{
 			new Notification(null, status.getValidationErrors().get(0).getErrorMessage(), Notification.Type.ERROR_MESSAGE, true).show(Page.getCurrent());
 			return false;
 		}
@@ -139,9 +145,15 @@ public class CenterLayout extends CssLayout {
 
 		//TODO Verificar se há pessoas ou atividades cadastradas
 		if (true) {
+
 			centerRepository.delete(current);
 			new Notification(null,"Atividade excluída.", Notification.Type.HUMANIZED_MESSAGE, true).show(Page.getCurrent());
-			return true;
+
+	    	//Update User Sharings
+	    	if(current.getId() == CurrentUser.getCurrentCenter().getId()) CurrentUser.getUser().setCurrentCenter(CurrentUser.getUser().getDefaultCenter());
+
+	    	return true;
+
 		} else {
 			new Notification(null, "Exclusão não permitidas, pois há pessoas e/ou atividades atreladas ao centro.", Notification.Type.WARNING_MESSAGE, true).show(Page.getCurrent());
 			return false;

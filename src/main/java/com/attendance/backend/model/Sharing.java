@@ -1,6 +1,7 @@
 package com.attendance.backend.model;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -38,9 +39,26 @@ public class Sharing {
 	public Sharing(User user, SharingType type, Activity activity) {
 		this.user = user;
 		this.type = type;
-		this.activity = activity;
+		this.center = activity.getCenter();
 		this.status = SharingStatus.ACCEPTED;
 		this.statusTime = new Timestamp(System.currentTimeMillis());
+		this.activity = activity;
+	}
+	
+	public String getDisplayUser(){
+		return user != null ? user.getEmail() : "";
+	}
+	
+	public String getDisplayActivityName(){
+		return activity != null ? activity.getName() : "";
+	}
+	
+	public String getDisplayType(){
+		return type.toString();
+	}
+	
+	public String getDisplayStatusTime(){
+		return new SimpleDateFormat("dd/MM//yyyy HH:mm:ss").format(statusTime);
 	}
 	
 	public boolean matches(SharingType type, Activity activity){
@@ -49,7 +67,7 @@ public class Sharing {
 			return false;
 		
 		//validate center
-		if(this.getSharingCenter().getId() != CurrentUser.getCurrentCenter().getId())
+		if(this.getCenter().getId() != CurrentUser.getCurrentCenter().getId())
 			return false;
 
 		return activity == null ? this.matches(type) : this.matchesActivity(type, activity);
@@ -87,12 +105,8 @@ public class Sharing {
 		return false;
 	}
 	
-	private boolean isSharingCenter(){
-		return this.activity == null && this.center != null;
-	}
-	
-	private Center getSharingCenter(){
-		return this.isSharingCenter() ? this.getCenter() : this.activity.getCenter();
+	public boolean isSharingCenter(){
+		return this.activity == null;
 	}
 	
 	//accessors
