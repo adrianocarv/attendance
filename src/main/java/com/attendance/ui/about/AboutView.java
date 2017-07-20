@@ -23,11 +23,8 @@ public class AboutView extends VerticalLayout implements View {
 	public static final String VIEW_NAME = "Sobre";
 
 	/** Dependences */
-	@Value("${build.version}")
-	private String buildVersion;
-
-	@Value("${build.timestamp}")
-	private String buildTimestamp;
+	@Value("${build.version}") private String buildVersion;
+	@Value("${build.timestamp}") private String buildTimestamp;
 
 	/** Components */
 	private Label labelAttendanceInfo = new Label();

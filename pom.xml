@@ -6,7 +6,7 @@
 
     <groupId>com.attendance</groupId>
     <artifactId>attendance</artifactId>
-    <version>2.2.0-RC-01</version>
+    <version>2.2.1-RC-01</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -67,7 +67,10 @@
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-spring-boot-starter</artifactId>
         </dependency>
-
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
 	</dependencies>
 
     <!-- tag::bom[] -->
@@ -120,18 +123,19 @@
 			            </goals>
 			            <configuration>
 			                <target name="deploy-on-server" description="how to get antrun plugin to work with SCP and SSH">
-			                    <echo message="Tansferring App file... ${app-file-name}" />
+
 			                    <!-- file to be transferred -->
+			                    <echo message="Tansferring App file... ${app-file-name}" />
 								<scp todir="${ftp-userid}@${ftp-server}:${ftp-remotedir}" port="${ftp-port}" password="${ftp-password}" trust="true">
 									<fileset file="target/${app-file-name}" />
 								</scp>
- 			                    <echo message="&#xa;&#xa;Copie a linha abaixo e execute no ternimal:&#xa;./attendance-startup.sh ${app-file-name}&#xa;&#xa;&#xa;" />
-			                    <!-- remote host and the command to be executed there
+ 
+			                    <!-- remote host and the command to be executed there -->
 			                    <sshexec trust="true" failonerror="true" host="${ftp-server}" port="${ftp-port}" username="${ftp-userid}" password="${ftp-password}" command="./attendance-startup.sh ${app-file-name}" timeout="120000" />
 			                    <taskdef name="scp" classname="org.apache.tools.ant.taskdefs.optional.ssh.Scp">
 			                        <classpath refid="maven.plugin.classpath" />
 			                    </taskdef>
-			                     -->
+
 			                </target>
 			            </configuration>
 			        </execution>

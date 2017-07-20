@@ -24,6 +24,7 @@ public class LoginScreen extends CssLayout {
 
 	private static final long serialVersionUID = 1L;
 
+	private String buildVersion;
 	private TextField username;
     private PasswordField password;
     private Button login;
@@ -31,8 +32,9 @@ public class LoginScreen extends CssLayout {
     private LoginListener loginListener;
     private AccessControl accessControl;
     
-    public LoginScreen(AccessControl accessControl, LoginListener loginListener) {
-        this.loginListener = loginListener;
+    public LoginScreen(String buildVersion, AccessControl accessControl, LoginListener loginListener) {
+        this.buildVersion = buildVersion;
+    	this.loginListener = loginListener;
         this.accessControl = accessControl;
         buildUI();
 
@@ -55,8 +57,7 @@ public class LoginScreen extends CssLayout {
         centeringLayout.setSpacing(false);
         centeringLayout.setStyleName("centering-layout");
         centeringLayout.addComponent(loginForm);
-        centeringLayout.setComponentAlignment(loginForm,
-                Alignment.MIDDLE_CENTER);
+        centeringLayout.setComponentAlignment(loginForm, Alignment.MIDDLE_CENTER);
 
         // information text about logging in
         CssLayout loginInformation = buildLoginInformation();
@@ -112,10 +113,15 @@ public class LoginScreen extends CssLayout {
     private CssLayout buildLoginInformation() {
         CssLayout loginInformation = new CssLayout();
         loginInformation.setStyleName("login-information");
-        Label loginInfoText = new Label(
-                "<h1>Login Information</h1>"
-                        + "Log in as &quot;admin&quot; to have full access. Log in with any other username to have read-only access. For all users, any password is fine",
-                ContentMode.HTML);
+        
+        String infoText = "<h1>Attendance</h1>";
+        infoText += "<h2>Seja Bem-vindo!</h2>"; 
+        infoText += "Crie suas atividades</br>"; 
+        infoText += "Marque as presenças</br>"; 
+        infoText += "Analise as frequências</br>"; 
+        infoText += "E compartilhe...</br>"; 
+        infoText += "<p align='right'><font size='1'><i>v. " + buildVersion + "</i></font size></p>"; 
+        Label loginInfoText = new Label(infoText,ContentMode.HTML);
         loginInfoText.setSizeFull();
         loginInformation.addComponent(loginInfoText);
         return loginInformation;

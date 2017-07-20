@@ -2,14 +2,13 @@ package com.attendance.ui;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.attendance.backend.model.SharingType;
 import com.attendance.ui.about.AboutView;
 import com.attendance.ui.activity.ActivityView;
 import com.attendance.ui.attendance.AttendanceView;
-import com.attendance.ui.authentication.CurrentUser;
 import com.attendance.ui.center.CenterView;
 import com.attendance.ui.person.PersonView;
 import com.attendance.ui.sharing.SharingView;
+import com.attendance.ui.user.UserView;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.ViewChangeListener;
@@ -36,6 +35,7 @@ public class MainScreen extends HorizontalLayout {
 	@Autowired private CenterView centerView;
 	@Autowired private SharingView sharingView;
 	@Autowired private AboutView aboutView;
+	@Autowired private UserView userView;
 
     /** Components */
 	private Menu menu;
@@ -57,22 +57,28 @@ public class MainScreen extends HorizontalLayout {
         navigator.setErrorView(ErrorView.class);
         menu = new Menu(navigator);
         
-        if(CurrentUser.isUserInRole(SharingType.ATTENDANCE_READ)) menu.addView(attendanceView, AttendanceView.VIEW_NAME, AttendanceView.VIEW_NAME, VaadinIcons.CHECK_SQUARE_O);
-        if(CurrentUser.isUserInRole(SharingType.PERSON_READ)) menu.addView(personView, PersonView.VIEW_NAME, PersonView.VIEW_NAME, VaadinIcons.GROUP);
-        if(CurrentUser.isUserInRole(SharingType.ACTIVITY_READ))menu.addView(activityView, ActivityView.VIEW_NAME, ActivityView.VIEW_NAME, VaadinIcons.CALENDAR_USER);
+        menu.addView(attendanceView, AttendanceView.VIEW_NAME, AttendanceView.VIEW_NAME, VaadinIcons.CHECK_SQUARE_O);
+        menu.addView(personView, PersonView.VIEW_NAME, PersonView.VIEW_NAME, VaadinIcons.GROUP);
+        menu.addView(activityView, ActivityView.VIEW_NAME, ActivityView.VIEW_NAME, VaadinIcons.CALENDAR_USER);
         menu.addView(centerView, CenterView.VIEW_NAME, CenterView.VIEW_NAME, VaadinIcons.INSTITUTION);
-        if(CurrentUser.isUserInRolesOR(SharingType.SHARING_CENTER, SharingType.SHARING_ACTIVITY)) menu.addView(sharingView, SharingView.VIEW_NAME, SharingView.VIEW_NAME, VaadinIcons.CONNECT_O);
+        menu.addView(sharingView, SharingView.VIEW_NAME, SharingView.VIEW_NAME, VaadinIcons.CONNECT_O);
         menu.addView(aboutView, AboutView.VIEW_NAME, AboutView.VIEW_NAME, VaadinIcons.INFO_CIRCLE);
-
-        this.menu.loadUserSection();
+        menu.addView(userView, UserView.VIEW_NAME);
+        menu.addSelectCenter();
         
+        navigator.addViewChangeListener(viewChangeListener);
+
         addComponent(menu);
         addComponent(viewContainer);
         setExpandRatio(viewContainer, 1);
         setSizeFull();
 	}
 	
-    // notify the view menu about view changes so that it can display which view
+	public Menu getMenu() {
+		return menu;
+	}
+
+	// notify the view menu about view changes so that it can display which view
     // is currently active
     ViewChangeListener viewChangeListener = new ViewChangeListener() {
 		private static final long serialVersionUID = 1L;

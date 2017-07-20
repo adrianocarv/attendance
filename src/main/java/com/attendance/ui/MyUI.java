@@ -4,20 +4,17 @@ import javax.servlet.annotation.WebServlet;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
-import com.attendance.backend.model.SharingType;
 import com.attendance.backend.repository.SharingRepository;
 import com.attendance.backend.repository.SharingUserRepository;
 import com.attendance.ui.about.AboutView;
-import com.attendance.ui.activity.ActivityView;
 import com.attendance.ui.attendance.AttendanceView;
 import com.attendance.ui.authentication.AccessControl;
 import com.attendance.ui.authentication.CurrentUser;
 import com.attendance.ui.authentication.DBAccessControl;
 import com.attendance.ui.authentication.LoginScreen;
 import com.attendance.ui.authentication.LoginScreen.LoginListener;
-import com.attendance.ui.person.PersonView;
-import com.attendance.ui.sharing.SharingView;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.annotations.Viewport;
@@ -44,10 +41,12 @@ public class MyUI extends UI {
 	private static final long serialVersionUID = 1L;
 
     /** Dependences */
+	@Value("${build.version}") private String buildVersion;
     @Autowired private SharingUserRepository sharingUserRepository;
     @Autowired private SharingRepository sharingRepository;
     @Autowired private DBAccessControl accessControl;
 
+    
 	private final MainScreen mainScreen;
 	
 	@Autowired
@@ -60,8 +59,11 @@ public class MyUI extends UI {
         Responsive.makeResponsive(this);
         setLocale(vaadinRequest.getLocale());
         getPage().setTitle("Attendance");
+
+        this.mainScreen.makeScreen(MyUI.this);
+
         if (!accessControl.isUserSignedIn()) {
-            setContent(new LoginScreen(accessControl, new LoginListener() {
+            setContent(new LoginScreen(buildVersion, accessControl, new LoginListener() {
             	private static final long serialVersionUID = 1L;
                 @Override
                 public void loginSuccessful() {
@@ -75,24 +77,26 @@ public class MyUI extends UI {
 
     protected void showMainView() {
 
-    	this.makeUserScreen();
-    	
-    	System.out.println("showMainView() - " + getNavigator().getState());
-    	
     	addStyleName(ValoTheme.UI_WITH_MENU);
         setContent(mainScreen);
 
+        //Update User Sharings
+    	CurrentUser.getUser().setCenters(sharingUserRepository.findCurrentUserCenters());
+    	CurrentUser.getUser().setSharings(sharingRepository.findByUser(CurrentUser.getUser()));
+
+		this.mainScreen.getMenu().refresh();
+    	
         getNavigator().navigateTo(this.getViewToNavigate());
     }
     
     private String getViewToNavigate(){
-        String viewName = StringUtils.isEmpty(getNavigator().getState()) ? AttendanceView.VIEW_NAME : getNavigator().getState();
 
-        if(viewName.equals(AttendanceView.VIEW_NAME) && !CurrentUser.isUserInRole(SharingType.ATTENDANCE_READ)) return AboutView.VIEW_NAME;
-        if(viewName.equals(PersonView.VIEW_NAME) && !CurrentUser.isUserInRole(SharingType.PERSON_READ)) return AboutView.VIEW_NAME;
-        if(viewName.equals(ActivityView.VIEW_NAME) && !CurrentUser.isUserInRole(SharingType.ACTIVITY_READ)) return AboutView.VIEW_NAME;
-        if(viewName.equals(SharingView.VIEW_NAME) && !CurrentUser.isUserInRolesOR(SharingType.SHARING_CENTER, SharingType.SHARING_ACTIVITY)) return AboutView.VIEW_NAME;
+    	String viewName = StringUtils.isEmpty(getNavigator().getState()) ? AttendanceView.VIEW_NAME : getNavigator().getState();
+
+        viewName = mainScreen.getMenu().isVisibleView(viewName) ? viewName : AboutView.VIEW_NAME; 
         
+        mainScreen.getMenu().setActiveView(viewName);
+
         return viewName;
     }
     
@@ -109,14 +113,4 @@ public class MyUI extends UI {
     public static class MyUIServlet extends VaadinServlet {
     	private static final long serialVersionUID = 1L;
     }
-    
-    private void makeUserScreen(){
-
-    	//Update User Sharings
-    	CurrentUser.getUser().setCenters(sharingUserRepository.findCurrentUserCenters());
-    	CurrentUser.getUser().setSharings(sharingRepository.findByUser(CurrentUser.getUser()));
-
-		this.mainScreen.makeScreen(MyUI.this);
-    }
-
 }

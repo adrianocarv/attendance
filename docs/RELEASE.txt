@@ -1,4 +1,23 @@
 ********************
+Version 2.2.1-RC-01:
+
+Bugs:
+
+	- Combo do Centro distorcida no menu responsivo  
+
+Features:
+
+	- Melhoria no menu
+		- Iluminar item menu ativo
+		- Combo para baixo
+		- Logout
+		- Ícone de usuário
+		- Preferências
+	- Login information: texto + versão
+	- Maven Install: derruba e sobe a aplicação automaticamente 
+ 
+
+********************
 Version 2.2.0-RC-01:
 
 Bugs:

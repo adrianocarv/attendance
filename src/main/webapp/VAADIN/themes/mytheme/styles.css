@@ -12079,7 +12079,8 @@ div.v-layout.v-horizontal.v-widget {
 	box-shadow: 0 2px 3px rgba(0, 0, 0, 0.05);
 	display: block;
 	margin: 0 auto 0.3em;
-	border: 1px solid #c5c5c5;
+	/* Adriano (20/07/2017) */	
+	/*border: 1px solid #c5c5c5;*/
 }
 
 .mytheme .v-menubar-user-menu  > .v-menubar-menuitem:after {
@@ -13034,11 +13035,13 @@ div.v-layout.v-horizontal.v-widget {
 	display: none;
 }
 
-.mytheme .v-ui[width-range~="801px-"] .valo-menu-part .user-menu {
+
+/* Willian (19/07/2017) */
+/*.mytheme .v-ui[width-range~="801px-"] .valo-menu-part .user-menu {
 	position: fixed;
 	bottom: 0;
 	margin-bottom: 0;
-}
+}*/
 
 .mytheme .v-ui[width-range~="0-550px"] .product-form-wrapper {
 	width: 100%;
@@ -13090,3 +13093,19 @@ div.v-layout.v-horizontal.v-widget {
 .mytheme .align-right {
 	text-align: right;
 }
+
+/* Willian (19/07/2017) */
+.combo-menu {
+	padding: 21px 10px;
+	text-align: center;
+}
+
+/* Willian (19/07/2017) */
+.combo-menu .v-filterselect.v-widget {
+	max-width: 100%;
+    height: 23px;
+    font-size: 11px;
+}
+
+
+
