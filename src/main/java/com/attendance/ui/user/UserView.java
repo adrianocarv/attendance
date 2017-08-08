@@ -2,22 +2,17 @@ package com.attendance.ui.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.attendance.backend.model.Person;
-import com.attendance.backend.model.SharingType;
+import com.attendance.backend.model.User;
+import com.attendance.backend.repository.UserRepository;
 import com.attendance.ui.authentication.CurrentUser;
-import com.vaadin.icons.VaadinIcons;
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CssLayout;
-import com.vaadin.ui.Grid;
-import com.vaadin.ui.Grid.SelectionMode;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.TextField;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
@@ -27,17 +22,23 @@ public class UserView extends CssLayout implements View {
 
 	private static final long serialVersionUID = 1L;
 
-    public static final String VIEW_NAME = "Usuários";
+    public static final String VIEW_NAME = "Perfil";
 
 	/** Dependences */
+	@Autowired private UserRepository userRepository;
+    private final UserLayout userLayout;
 
     /** Components */
-	private TextField fieldFilter = new TextField();
-	private Button buttonNew= new Button("", VaadinIcons.PLUS_CIRCLE);
-	private Grid<Person> grid = new Grid<>(Person.class);
+    private Label id = new Label("id");
+    private Label username = new Label("username");
+    private Label name = new Label("name");
+    private Label email = new Label("email");
+    private Label defaultCenter = new Label("Centro padrão");
+	private Button buttonEdit = new Button("Editar");
 	
 	@Autowired
-	public UserView() {
+	public UserView(UserLayout userLayout) {
+		this.userLayout = userLayout;
 		
 		buildLayout();
 		configureComponents();
@@ -48,50 +49,42 @@ public class UserView extends CssLayout implements View {
         setSizeFull();
         addStyleName("crud-view");
 
-        HorizontalLayout topLayout = new HorizontalLayout(fieldFilter, buttonNew);
-        topLayout.setWidth("100%");
-        topLayout.setComponentAlignment(fieldFilter, Alignment.MIDDLE_LEFT);
-        topLayout.setExpandRatio(fieldFilter, 3);
-        topLayout.setExpandRatio(buttonNew, 1);
-        topLayout.setStyleName("top-bar");
-
-    	VerticalLayout vertical = new VerticalLayout(topLayout, grid);
-    	vertical.setSizeFull();
+    	VerticalLayout vertical = new VerticalLayout(id, defaultCenter, username, name, email, buttonEdit);
     	vertical.setMargin(true);
-    	vertical.setStyleName("form-layout");
-    	vertical.setExpandRatio(grid,  1);
     	
-        addComponents(vertical);
+    	vertical.setStyleName("form-layout");
+    	
+        addComponents(userLayout, vertical);
 	}
 	
 	private void configureComponents() {
-        fieldFilter.setStyleName("filter-textfield");
-        fieldFilter.setPlaceholder("Buscar por Nome");
-
-        buttonNew.addStyleName(ValoTheme.BUTTON_PRIMARY);
-		
-		grid.setSizeFull();
-		grid.setColumns("name");
-		grid.getColumn("name").setCaption("Pessoas").setResizable(false).setSortable(true);
-		grid.sort("name");
-		grid.setSelectionMode(SelectionMode.SINGLE);
+        buttonEdit.addStyleName(ValoTheme.BUTTON_PRIMARY);
+        buttonEdit.setClickShortcut(ShortcutAction.KeyCode.ENTER);
 	}
 
 	private void hookLogicToComponents() {
 
-		fieldFilter.setValueChangeMode(ValueChangeMode.LAZY);
+		buttonEdit.addClickListener(e -> userLayout.enter(this));
+
 	}
 
     @Override
     public void enter(ViewChangeEvent event) {
 
-    	//security
-    	buttonNew.setVisible(CurrentUser.isUserInRole(SharingType.PERSON_WRITE));
+    	userLayout.setVisible(false);
 
-    	grid.setVisible(true);
-
-		fieldFilter.focus();
-		fieldFilter.selectAll();
+    	User user = userRepository.findOne(CurrentUser.getUser().getId());
+    	
+    	if(user == null)
+    		return;
+    	
+        id.setValue("Id: " + user.getId()+"");
+        username.setValue("Username: " + user.getUsername());
+        name.setValue("Nome: " + user.getName());
+        email.setValue("E-mail: " + user.getEmail());
+        defaultCenter.setValue("Centro padrão: " + user.getDefaultCenter().getName());
+        
+        buttonEdit.focus();
     }
 
 }

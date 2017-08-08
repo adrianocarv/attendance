@@ -9,6 +9,7 @@ import com.attendance.backend.model.Activity;
 import com.attendance.backend.model.Sharing;
 import com.attendance.backend.model.SharingType;
 import com.attendance.backend.model.User;
+import com.attendance.backend.model.UserStatus;
 import com.attendance.backend.repository.ActivityRepository;
 import com.attendance.backend.repository.SharingRepository;
 import com.attendance.backend.repository.UserRepository;
@@ -214,6 +215,7 @@ public class SharingLayout extends CssLayout {
     	user.setUsername(email.getValue().substring(0,email.getValue().indexOf('@')));
     	user.setName(user.getUsername());
     	user.setPassword("@@@");
+    	user.setStatus(UserStatus.NEW_BY_SHARING);
     	
     	//Resolve existent username
     	userDB = userRepository.findOneByUsername(user.getUsername());

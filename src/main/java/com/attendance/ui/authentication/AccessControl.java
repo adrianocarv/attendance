@@ -2,6 +2,8 @@ package com.attendance.ui.authentication;
 
 import java.io.Serializable;
 
+import com.attendance.backend.model.User;
+
 /**
  * Simple interface for authentication and authorization checks.
  */
@@ -14,4 +16,7 @@ public interface AccessControl extends Serializable {
     public boolean isUserInRole(String role);
 
     public String getPrincipalName();
+    
+    public boolean register(User user);
+    
 }

@@ -1,11 +1,9 @@
-prompt de comando: cmd
+
+Abrir: Git Shell
 
 cd\
 cd GitHub\attendance
-heroku
 
 git add .
 git commit -m "Version 2.2.0-RC-01"
-git push heroku master
-
-heroku open
+git push origin master

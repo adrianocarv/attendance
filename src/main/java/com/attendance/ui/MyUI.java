@@ -93,7 +93,7 @@ public class MyUI extends UI {
 
     	String viewName = StringUtils.isEmpty(getNavigator().getState()) ? AttendanceView.VIEW_NAME : getNavigator().getState();
 
-        viewName = mainScreen.getMenu().isVisibleView(viewName) ? viewName : AboutView.VIEW_NAME; 
+        viewName = mainScreen.getMenu().isVisibleView(viewName) && !CurrentUser.getUser().isInterceptedLogin() ? viewName : AboutView.VIEW_NAME; 
         
         mainScreen.getMenu().setActiveView(viewName);
 

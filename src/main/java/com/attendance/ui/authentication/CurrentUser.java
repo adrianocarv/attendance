@@ -80,6 +80,10 @@ public final class CurrentUser {
 
 	private static boolean isUserInRole(SharingType type, Activity activity) {
 		
+		//Login intercepted
+		if(getUser().isInterceptedLogin())
+			return false;
+		
 		//Onwer Center has priority
 		if(getCurrentCenter().isCurrentUserOwner())
 			return true;
@@ -109,8 +113,7 @@ public final class CurrentUser {
     private static VaadinRequest getCurrentRequest() {
         VaadinRequest request = VaadinService.getCurrentRequest();
         if (request == null) {
-            throw new IllegalStateException(
-                    "No request bound to current thread");
+            throw new IllegalStateException("No request bound to current thread");
         }
         return request;
     }

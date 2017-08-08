@@ -1,5 +1,6 @@
 package com.attendance.backend.model;
 
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,9 +20,11 @@ public class User {
 	private @NotNull String username;
 	private String name;
 	private @NotNull @Email String email;
+	private @Email String oldMail;
 	private String password;
     private @ManyToOne Center defaultCenter;
-    private @NotNull boolean activated;
+    private UserStatus status = UserStatus.NEW;
+    private String accessToken;
 
     private @Transient List<Center> centers = new ArrayList<Center>();
     private @Transient List<Sharing> sharings = new ArrayList<Sharing>();
@@ -34,10 +37,44 @@ public class User {
 		this.id = id;
 	}
 
+	public User(String username, String name, String email, String password) {
+		this.username = username;
+		this.name = name;
+		this.email = email;
+		this.password = User.getEncryptedPassword(password);
+	}
+	
 	public User(String email) {
 		this.email = email;
 	}
 
+	public static String getPasswordRegexp(){
+		//Reference: https://stackoverflow.com/questions/3802192/regexp-java-for-password-validation
+		//^                 # start-of-string
+		//(?=.*[0-9])       # a digit must occur at least once
+		//(?=.*[a-z])       # a lower case letter must occur at least once
+		//(?=\S+$)          # no whitespace allowed in the entire string
+		//.{6,}             # anything, at least six places though
+		//$                 # end-of-string
+		return "^(?=.*[0-9])(?=.*[a-z])(?=\\S+$).{6,}$";
+	}
+	
+	public static String getEncryptedPassword(String password) {
+		String result = "";
+		try {
+			MessageDigest m = MessageDigest.getInstance("MD5");
+			m.update(password.getBytes("UTF8"));
+			byte s[] = m.digest();
+			for (int i = 0; i < s.length; i++) {
+				result += Integer.toHexString((0x000000ff & s[i]) | 0xffffff00).substring(6);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
 	public Center getCurrentCenter(){
 
 		if(this.currentCenter == null && this.centers.isEmpty())
@@ -80,6 +117,10 @@ public class User {
 		}
 
 		return false;
+	}
+
+	public boolean isInterceptedLogin(){
+		return status == UserStatus.NEW || status == UserStatus.NEW_BY_SHARING || status == UserStatus.CHANGED_MAIL;
 	}
 	
 	//accessors
@@ -151,11 +192,27 @@ public class User {
 		this.sharings = sharings;
 	}
 
-	public boolean isActivated() {
-		return activated;
+	public UserStatus getStatus() {
+		return status;
 	}
 
-	public void setActivated(boolean activated) {
-		this.activated = activated;
+	public void setStatus(UserStatus status) {
+		this.status = status;
+	}
+
+	public String getAccessToken() {
+		return accessToken;
+	}
+
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
+	}
+
+	public String getOldMail() {
+		return oldMail;
+	}
+
+	public void setOldMail(String oldMail) {
+		this.oldMail = oldMail;
 	}
 }

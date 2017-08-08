@@ -1,4 +1,19 @@
 ********************
+Version 2.3.0-RC-01:
+
+Bugs:
+
+	- Combo Centro não permite entrada de texto, logo, não abre o tecldo do celular  
+
+Features:
+
+	- Registro de usuário 
+	- Ativação por e-mail 
+	- Alteração de senha 
+	- Password com MD5 
+
+
+********************
 Version 2.2.1-RC-01:
 
 Bugs:

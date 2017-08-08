@@ -10,6 +10,7 @@ import com.attendance.ui.attendance.AttendanceView;
 import com.attendance.ui.authentication.CurrentUser;
 import com.attendance.ui.person.PersonView;
 import com.attendance.ui.sharing.SharingView;
+import com.attendance.ui.user.UserView;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
@@ -99,7 +100,7 @@ public class Menu extends CssLayout {
 
 			@Override
             public void menuSelected(final MenuItem selectedItem) {
-				//navigator.navigateTo(UserView.VIEW_NAME);
+				navigator.navigateTo(UserView.VIEW_NAME);
             }
         });
 
@@ -152,6 +153,7 @@ public class Menu extends CssLayout {
 
     	selectCenter.setItemCaptionGenerator(Center::getName);
    		selectCenter.setEmptySelectionAllowed(false);
+   		selectCenter.setTextInputAllowed(false);
         selectCenter.removeStyleName(VALO_MENUITEMS);
 
         selectCenter.addValueChangeListener(e -> {
@@ -206,7 +208,10 @@ public class Menu extends CssLayout {
     }
 
     public boolean isVisibleView(String viewName) {
-        Button selected = viewButtons.get(viewName);
+        if(UserView.VIEW_NAME.equals(viewName))
+        	return true;
+    	
+    	Button selected = viewButtons.get(viewName);
         if (selected != null) {
             return selected.isVisible();
         }
