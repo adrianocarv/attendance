@@ -6,7 +6,7 @@
 
     <groupId>com.attendance</groupId>
     <artifactId>attendance</artifactId>
-    <version>2.3.0-RC-01</version>
+    <version>2.3.1-RC-01</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -19,11 +19,11 @@
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<maven.build.timestamp.format>dd/MM/yyyy HH:mm</maven.build.timestamp.format>
 		<app-file-name>${project.artifactId}-${project.version}.jar</app-file-name>
-		<ftp-server>192.241.180.208</ftp-server>
-		<ftp-port>25800</ftp-port>
-		<ftp-userid>adrianocarv</ftp-userid>
-		<ftp-password>@a8859662</ftp-password>
-		<ftp-remotedir>/home/adrianocarv</ftp-remotedir>
+		<ftp-server>ip</ftp-server>
+		<ftp-port>port</ftp-port>
+		<ftp-userid>user</ftp-userid>
+		<ftp-password>pass</ftp-password>
+		<ftp-remotedir>dir</ftp-remotedir>
     </properties>
 
 	<dependencies>

@@ -1,6 +1,0 @@
-echo Stopping Attendance app...
-# pkill -f attendance-
-curl -X POST localhost:8081/shutdown
-
-echo Starting $1...
-jdk8/jre1.8.0_111/bin/java -Dserver.port=8081 -jar $1 &

@@ -1,7 +1,18 @@
 ********************
+Version 2.3.1-RC-01:
+
+Fixes:
+
+
+Features:
+
+	- Externalização de propriedades sigilosas 
+
+
+********************
 Version 2.3.0-RC-01:
 
-Bugs:
+Fixes:
 
 	- Combo Centro não permite entrada de texto, logo, não abre o tecldo do celular  
 
@@ -16,7 +27,7 @@ Features:
 ********************
 Version 2.2.1-RC-01:
 
-Bugs:
+Fixes:
 
 	- Combo do Centro distorcida no menu responsivo  
 
@@ -35,7 +46,7 @@ Features:
 ********************
 Version 2.2.0-RC-01:
 
-Bugs:
+Fixes:
 
 
 Features:
@@ -47,7 +58,7 @@ Features:
 ********************
 Version 2.1.1-RC-01:
 
-Bugs:
+Fixes:
 
 	- Autorização: Correção erros e Refactoring 
 
@@ -57,7 +68,7 @@ Features:
 ********************
 Version 2.1.0-RC-01:
 
-Bugs:
+Fixes:
 
 
 Features:
@@ -68,7 +79,7 @@ Features:
 ********************
 Version 2.0.0-RC-01:
 
-Bugs:
+Fixes:
 
 
 Features:
@@ -79,7 +90,7 @@ Features:
 ********************
 Version 1.2.0-RC-01:
 
-Bugs:
+Fixes:
 
 	- Presença: Campo de data: se null, coloca dia de hoje
 
@@ -97,7 +108,7 @@ Features:
 ********************
 Version 1.1.1-RC-01:
 
-Bugs:
+Fixes:
 
 	- Marcação de presenças: desmarcava um nome já selecionado ao adicionar outro nome
 
@@ -107,7 +118,7 @@ Features:
 ********************
 Version 1.1.0-RC-01:
 
-Bugs:
+Fixes:
 
 	- Diversos
 
