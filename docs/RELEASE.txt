@@ -1,4 +1,16 @@
 ********************
+Version 2.3.2-RC-01:
+
+Fixes:
+
+	- Compartilhamento: Combo Atividades ordenado por título
+	- Lançar presenças: Atividades ordenadas por título
+	- Data de aniversário formato? Dd/mm/yyy
+
+Features:
+
+
+********************
 Version 2.3.1-RC-01:
 
 Fixes:

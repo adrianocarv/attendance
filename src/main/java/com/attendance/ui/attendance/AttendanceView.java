@@ -60,6 +60,7 @@ public class AttendanceView extends CssLayout implements View {
 		grid.setSizeFull();
 		grid.setColumns("displayName");
 		grid.getColumn("displayName").setCaption("Atividades").setResizable(false).setSortable(false);
+		grid.sort("displayName");
 		grid.setSelectionMode(SelectionMode.SINGLE);
 	}
 

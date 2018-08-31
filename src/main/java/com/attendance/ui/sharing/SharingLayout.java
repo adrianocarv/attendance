@@ -246,7 +246,7 @@ public class SharingLayout extends CssLayout {
 		selectUsers.setItems(parentView.findSharingsUsers());
 		selectUsers.setSelectedItem(user);
 		selectActivities.clear();
-    	selectActivities.setItems(activityRepository.findByCenter(CurrentUser.getCurrentCenter()));
+    	selectActivities.setItems(activityRepository.findByCenterOrderByName(CurrentUser.getCurrentCenter()));
     	selectActivities.setSelectedItem(activity);
 		email.setValue("");
 		

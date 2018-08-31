@@ -165,7 +165,14 @@ public class PersonLayout extends CssLayout {
         binder.forField(checkContribuiValue).withConverter(new RealConverter()).bind("checkContribuiValue");
         binder.bindInstanceFields(this);
 
-    	name.setSizeFull();
+        birthday.setDateFormat("dd/MM/yyyy");
+        checkCooperadorDate.setDateFormat("dd/MM/yyyy");
+        checkEstudanteWADate.setDateFormat("dd/MM/yyyy");
+        checkEstudanteMailDate.setDateFormat("dd/MM/yyyy");
+        checkProfissionalWADate.setDateFormat("dd/MM/yyyy");
+        checkProfissionalMailDate.setDateFormat("dd/MM/yyyy");
+		
+		name.setSizeFull();
     	shortName.setSizeFull();
     	email.setSizeFull();
     	phone.setSizeFull();

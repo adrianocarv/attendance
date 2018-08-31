@@ -11,4 +11,5 @@ public interface ActivityRepository extends JpaRepository<Activity, Long> {
 	
 	List<Activity> findByCenter(Center center);
 	
+	List<Activity> findByCenterOrderByName(Center center);
 }
