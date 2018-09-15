@@ -4,18 +4,12 @@
 
 2. Atualizar pom.xml na tag <version> com o número da versão nova 
 
-b) No Git Shell
+3. Run -> Run Configurations... -> Executar "Attendance - install" 
 
-cd\
-cd GitHub\attendance
-
-git add .
-git commit -m "Version 2.3.1-RC-01"
-git push origin master
-exit
+4. Demora um pouco... 
 
 
-c) No Servidor (Digital Ocean)
+b) No Servidor (Digital Ocean)
 
 1. Abrir o PuTTY Portable (D:\Dropbox\Programas 2\@portable\PuTTYPortable\PuTTYPortable.exe)
 
@@ -29,17 +23,26 @@ c) No Servidor (Digital Ocean)
   <colocar a senha navamente>
 
 5. Subir a última versão do Attendance
-./attendance-startup.sh attendance-<versão>.jar
+./attendance-startup.sh attendance-<versão>.jar &
 
 6. Verificar se está no ar com a versão atualizada
   esplanada.org.br/att
 
 7. Fechar o PuTTY Portable
+  crtl+c
   exit
   exit
-
-
-c) No Navegador
 
 8.Verificar NOVAMENTE se a Aplicação está no ar com a versão atualizada (fazer login)
   esplanada.org.br/att
+
+
+c) No Git Shell
+
+cd\
+cd GitHub\attendance
+
+git add .
+git commit -m "Version 2.3.2-RC-01"
+git push origin master
+exit

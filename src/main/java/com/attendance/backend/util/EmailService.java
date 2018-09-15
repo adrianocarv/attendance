@@ -28,7 +28,7 @@ public class EmailService {
 	public void sendSimpleMessage(String to, String subject, String text) {
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setTo(to);
-		message.setSubject(subject);
+		message.setSubject("Attendance: " + subject);
 		message.setText(text);
 		emailSender.send(message);
 	}
@@ -52,11 +52,12 @@ public class EmailService {
 			// use the true flag to indicate you need a multipart message
 			MimeMessageHelper messageHelper = new MimeMessageHelper(message, true);
 			messageHelper.setTo(user.getEmail());
-			messageHelper.setSubject("Verifique seu endereço de e-mail");
+			messageHelper.setSubject("Attendance: Verifique seu endereço de e-mail");
 			// use the true flag to indicate the text included is HTML
 			messageHelper.setText(body, true);		
 			emailSender.send(message);
 		} catch (Exception e) {
+			e.printStackTrace();
 			NotificationUtil.show(new Notification("Problema no envio do e-mail", e.getMessage() , Notification.Type.ERROR_MESSAGE));
 			return null;
 		}

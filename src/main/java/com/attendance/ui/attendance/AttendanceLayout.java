@@ -32,6 +32,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.renderers.HtmlRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 
 @SpringComponent
@@ -51,16 +52,19 @@ public class AttendanceLayout extends CssLayout {
     /** Components */
 	private Label labelActivity = new Label(); 
 	private DateField fieldDate = new DateField();
+	private DateField fieldNewDate = new DateField();
 	private TextField fieldTitle = new TextField();
 	private Button buttonEvents = new Button(VaadinIcons.USER_CHECK);
 	private Button buttonSave = new Button(VaadinIcons.CHECK);
 	private Button buttonEdit = new Button(VaadinIcons.EDIT);
 	private Button buttonNewPerson = new Button(VaadinIcons.PLUS_CIRCLE);
+	private Button buttonChangeDate = new Button(VaadinIcons.CALENDAR);
 	private Button buttonBack = new Button(VaadinIcons.ARROW_BACKWARD);
 	private Button buttonTotal = new Button();
 	private Grid<Attendance> grid = new Grid<>(Attendance.class);
 	
 	HorizontalLayout titleLayout = new HorizontalLayout(fieldTitle);
+	HorizontalLayout newDateLayout = new HorizontalLayout(fieldNewDate);
 
 	private AttendanceView parentView;
     private Activity currentActivity;
@@ -84,8 +88,8 @@ public class AttendanceLayout extends CssLayout {
         addStyleName("crud-view");
 
     	HorizontalLayout titleAndDate = new HorizontalLayout(labelActivity, fieldDate);
-    	HorizontalLayout actions = new HorizontalLayout(buttonEvents, buttonSave, buttonEdit, buttonNewPerson, buttonBack, buttonTotal);
-    	VerticalLayout layoutTop = new VerticalLayout(titleAndDate, titleLayout, actions);
+    	HorizontalLayout actions = new HorizontalLayout(buttonEvents, buttonSave, buttonEdit, buttonNewPerson, buttonChangeDate, buttonBack, buttonTotal);
+    	VerticalLayout layoutTop = new VerticalLayout(titleAndDate, newDateLayout, titleLayout, actions);
     	VerticalLayout layoutTopAndGrig = new VerticalLayout(layoutTop, grid);
 
     	actions.setSpacing(true);
@@ -115,9 +119,21 @@ public class AttendanceLayout extends CssLayout {
 		buttonBack.setStyleName("cancel");
 		buttonTotal.setStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
 
+		/*
+		buttonEvents.setDescription("Histórico de presenças na atividade");
+		buttonSave.setDescription("Salvar a lista de presenças");
+		buttonEdit.setDescription("Editar presenças");
+		buttonNewPerson.setDescription("Acrescentar mais pessoas na lista");
+		buttonChangeDate.setDescription("Alterar a data da atividade");
+		buttonBack.setDescription("Voltar para a lista de atividades");
+		buttonTotal.setDescription("Total de presentes (HJ = atividade na data de hoje)");
+		*/
+		
 		grid.setSizeFull();
-		grid.setColumns("name");
-		grid.getColumn("name").setCaption("Nome").setResizable(false).setSortable(false);
+		//grid.setColumns("name");
+		//grid.getColumn("name").setCaption("Nome").setResizable(false).setSortable(false);
+		grid.removeAllColumns();
+		grid.addColumn("name", new HtmlRenderer()).setCaption("Nome").setResizable(false).setSortable(false);
 	}
 
 	private void hookLogicToComponents() {
@@ -138,14 +154,15 @@ public class AttendanceLayout extends CssLayout {
 		
 		buttonNewPerson.addClickListener(e -> attendancePersonLayout.enter(this));
 		
+		buttonChangeDate.addClickListener(e -> {
+			newDateLayout.setVisible(true);
+			buttonChangeDate.setVisible(false);
+			fieldNewDate.setValue(fieldDate.getValue());
+			fieldNewDate.focus();
+		});
+
 		buttonBack.addClickListener(e -> parentView.enter(null));
 		
-		fieldDate.addValueChangeListener(e -> {
-			if(fieldDate.getValue() == null)
-				fieldDate.setValue(new Date(System.currentTimeMillis()).toLocalDate());
-
-			refreshEditModeComponents();	
-		});
 	}
 
 	public void enter(AttendanceView parentView, Activity a) {
@@ -168,14 +185,19 @@ public class AttendanceLayout extends CssLayout {
     	//security
     	if(!CurrentUser.isUserInActivityWrite(currentActivity)) editMode = false;
 		
-		fieldDate.setEnabled(!editMode);
+		fieldDate.setEnabled(false);
 		fieldTitle.setEnabled(editMode);
 		titleLayout.setVisible(currentActivity.isCheckTitleRequired());
 		buttonSave.setVisible(editMode);
    		buttonEdit.setVisible(!editMode);
    		buttonNewPerson.setVisible(editMode);
+   		buttonChangeDate.setVisible(editMode);
 		
-   		if(editMode){
+		//reset change date elements
+   		newDateLayout.setVisible(false);
+		fieldNewDate.clear();
+		
+		if(editMode){
    			grid.setSelectionMode(SelectionMode.MULTI);
    			grid.asMultiSelect().addValueChangeListener(e -> {
    		   		String today = DateUtils.isSameDay(Date.valueOf(fieldDate.getValue()), new Date(System.currentTimeMillis())) ? " HJ" : "";
@@ -269,10 +291,27 @@ public class AttendanceLayout extends CssLayout {
 
 		//Required title check
 		fieldTitle.setValue(StringUtils.trim(fieldTitle.getValue()));
-		if(currentActivity.isCheckTitleRequired() && fieldTitle.getValue().length() < 2){
-			new Notification(null, "Título é requerido para esta atividade.", Notification.Type.ERROR_MESSAGE, true).show(Page.getCurrent());
+		if(!grid.getSelectedItems().isEmpty() && currentActivity.isCheckTitleRequired() && fieldTitle.getValue().length() < 2){
+			new Notification(null, "TÍTULO é requerido para esta atividade.", Notification.Type.WARNING_MESSAGE, true).show(Page.getCurrent());
 			fieldTitle.focus();
 			return false;
+		}
+			
+		//Required new date check
+		if(newDateLayout.isVisible()){
+			if(fieldNewDate.isEmpty()){
+				new Notification(null, "Informe a NOVA DATA para esta atividade.", Notification.Type.WARNING_MESSAGE, true).show(Page.getCurrent());
+				fieldNewDate.focus();
+				return false;
+			}
+			if(!fieldNewDate.getValue().equals(fieldDate.getValue()) ){
+				List<Attendance> newDateList = attendanceRepository.findByDateAndActivity(Date.valueOf(fieldNewDate.getValue()), currentActivity);
+				if(!newDateList.isEmpty()){
+					new Notification(null, "Alteração não permitida, pois a atividade já tem " + newDateList.size() + " presenças na nova data." , Notification.Type.ERROR_MESSAGE, true).show(Page.getCurrent());
+					fieldNewDate.focus();
+					return false;
+				}
+			}
 		}
 			
 		//Remove all first
@@ -280,7 +319,12 @@ public class AttendanceLayout extends CssLayout {
 		for (Attendance a : savedList) {
 			attendanceRepository.delete(a);
 		}
-		
+	
+		//Change date logic
+		if(newDateLayout.isVisible()){
+			fieldDate.setValue(fieldNewDate.getValue());
+		}
+			
 		//Insert all selected, if not exists
 		for (Attendance a : grid.getSelectedItems()) {
 

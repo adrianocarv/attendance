@@ -2,6 +2,8 @@ package com.attendance.ui.authentication;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.attendance.backend.model.User;
 import com.attendance.ui.util.NotificationUtil;
 import com.vaadin.data.BeanValidationBinder;
@@ -225,6 +227,8 @@ public class LoginScreen extends CssLayout {
     private void register() {
 
     	//Fields validations
+    	registerEmail.setValue(StringUtils.trim(registerEmail.getValue()));
+    	
     	Binder<User> binder = new BeanValidationBinder<>(User.class);
     	binder.forField(registerName).withValidator(new StringLengthValidator("O nome deve ter pelo menos 5 caracteres", 5, null)).bind("name");
     	binder.forField(registerUsername).withValidator(new StringLengthValidator("O nome do usuário deve ter entre 2 e 20 caracteres", 2, 20)).bind("username");

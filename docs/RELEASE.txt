@@ -1,4 +1,29 @@
 ********************
+Version 2.4.1-RC-01:
+
+Fixes:
+
+	- Presenças: Configuração da atividades de 'Sugerir pessoas' não está funcionando
+
+Features:
+
+	- Presenças: trocar NEW e no-WA por ícones
+
+
+********************
+Version 2.4.0-RC-01:
+
+Fixes:
+
+	- Ao registrar, dá trim no e-mail pra evitar o erro...
+
+Features:
+
+	- Permite a alteração da data da presença na atividade!
+	- Na marcação de presença: Mostrar se a pessoa não está no Whats
+
+
+********************
 Version 2.3.2-RC-01:
 
 Fixes:

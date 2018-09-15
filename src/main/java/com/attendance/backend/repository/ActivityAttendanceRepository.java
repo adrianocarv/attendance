@@ -51,7 +51,7 @@ public class ActivityAttendanceRepository {
 		if(personSugestionByEvents == null && personSugestionByDays != null && personSugestionByDays > 0)
 			byEnvents = false;
 		
-		if(personSugestionByEvents == null || personSugestionByDays <= 0)
+		if(personSugestionByEvents == null && (personSugestionByDays == null || personSugestionByDays <= 0))
 			personSugestionByEvents = 6;
 		
 		String sqlByEnvents = "";

@@ -14,6 +14,8 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.Email;
 import org.springframework.util.StringUtils;
 
+import com.vaadin.icons.VaadinIcons;
+
 @Entity
 public class Person {
 
@@ -90,12 +92,12 @@ public class Person {
 
 	public String getDisplayName() {
 		String display = StringUtils.isEmpty(shortName) ? name : shortName+".";
-		if(checkColegial)
-			display += " (c)";
-		if(checkUniversitario)
-			display += " (u)";
+		if(!checkColegial && !checkUniversitario)
+			display += " " + VaadinIcons.ADJUST.getHtml();
 		if(status == PersonStatus.NEW)
-			display += " NEW";
+			display += " " + VaadinIcons.CLIPBOARD_USER.getHtml();
+		if(!checkEstudanteWA)
+			display += " " + VaadinIcons.COMMENT_ELLIPSIS_O.getHtml();
 
 		return display;
 	}

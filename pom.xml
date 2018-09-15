@@ -6,7 +6,7 @@
 
     <groupId>com.attendance</groupId>
     <artifactId>attendance</artifactId>
-    <version>2.3.2-RC-01</version>
+    <version>2.4.1-RC-01</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
