@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.attendance.backend.model.User;
 import com.attendance.backend.repository.UserRepository;
-import com.attendance.backend.util.EmailService;
+import com.attendance.backend.util.AttendanceEmailService;
 import com.attendance.ui.util.NotificationUtil;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.Notification;
@@ -16,8 +16,7 @@ public class DBAccessControl implements AccessControl {
 	
     /** Dependences */
 	@Autowired private UserRepository userRepository;
-    @Autowired private EmailService emailService;
-
+    @Autowired private AttendanceEmailService attendanceEmailService;
 
 	@Override
     public boolean signIn(String username, String password) {
@@ -72,11 +71,16 @@ public class DBAccessControl implements AccessControl {
 		userRepository.save(newUser);
 		
 		//Send mail
-		String accessToken = emailService.sendEmailVerification(newUser);
+		String accessToken = attendanceEmailService.sendEmailVerification(newUser);
 		if(accessToken == null) return false;
 		newUser.setAccessToken(accessToken);
 		userRepository.save(newUser);
         
         return true;
     }
+	
+    @Override
+	public AttendanceEmailService getAttendanceEmailService() {
+		return attendanceEmailService;
+	}
 }

@@ -3,6 +3,7 @@ package com.attendance.ui.attendance;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -51,16 +52,15 @@ public class AttendanceLayout extends CssLayout {
 
     /** Components */
 	private Label labelActivity = new Label(); 
-	private DateField fieldDate = new DateField();
 	private DateField fieldNewDate = new DateField();
 	private TextField fieldTitle = new TextField();
-	private Button buttonEvents = new Button(VaadinIcons.USER_CHECK);
+	private Button buttonTotal = new Button();
 	private Button buttonSave = new Button(VaadinIcons.CHECK);
 	private Button buttonEdit = new Button(VaadinIcons.EDIT);
 	private Button buttonNewPerson = new Button(VaadinIcons.PLUS_CIRCLE);
 	private Button buttonChangeDate = new Button(VaadinIcons.CALENDAR);
 	private Button buttonBack = new Button(VaadinIcons.ARROW_BACKWARD);
-	private Button buttonTotal = new Button();
+	private Button buttonEvents = new Button(VaadinIcons.USER_CHECK);
 	private Grid<Attendance> grid = new Grid<>(Attendance.class);
 	
 	HorizontalLayout titleLayout = new HorizontalLayout(fieldTitle);
@@ -68,7 +68,8 @@ public class AttendanceLayout extends CssLayout {
 
 	private AttendanceView parentView;
     private Activity currentActivity;
-	private boolean editMode = true;
+    private LocalDate currentDate;
+    private boolean editMode = true;
 	private List<Attendance> gridList = null;
 	
 	@Autowired
@@ -87,8 +88,8 @@ public class AttendanceLayout extends CssLayout {
         setSizeFull();
         addStyleName("crud-view");
 
-    	HorizontalLayout titleAndDate = new HorizontalLayout(labelActivity, fieldDate);
-    	HorizontalLayout actions = new HorizontalLayout(buttonEvents, buttonSave, buttonEdit, buttonNewPerson, buttonChangeDate, buttonBack, buttonTotal);
+    	HorizontalLayout titleAndDate = new HorizontalLayout(labelActivity);
+    	HorizontalLayout actions = new HorizontalLayout(buttonTotal, buttonSave, buttonEdit, buttonNewPerson, buttonChangeDate, buttonBack, buttonEvents);
     	VerticalLayout layoutTop = new VerticalLayout(titleAndDate, newDateLayout, titleLayout, actions);
     	VerticalLayout layoutTopAndGrig = new VerticalLayout(layoutTop, grid);
 
@@ -157,9 +158,14 @@ public class AttendanceLayout extends CssLayout {
 		buttonChangeDate.addClickListener(e -> {
 			newDateLayout.setVisible(true);
 			buttonChangeDate.setVisible(false);
-			fieldNewDate.setValue(fieldDate.getValue());
+			fieldNewDate.setValue(currentDate);
 			fieldNewDate.focus();
 		});
+
+//		fieldNewDate.addValueChangeListener(e -> {
+//			currentDate = fieldNewDate.getValue();
+//			labelActivity.setValue(currentActivity.getName() + ": " + this.getCurrentDateAsString());
+//		});
 
 		buttonBack.addClickListener(e -> parentView.enter(null));
 		
@@ -172,8 +178,9 @@ public class AttendanceLayout extends CssLayout {
     	this.parentView.getVertical().setVisible(false);
     	setVisible(true);
     	
-		labelActivity.setValue(currentActivity.getName());
-		fieldDate.setValue(new Date(System.currentTimeMillis()).toLocalDate());
+		labelActivity.setValue(currentActivity.getName() + ": " + this.getCurrentDateAsString());
+		currentDate = new Date(System.currentTimeMillis()).toLocalDate();
+		labelActivity.setValue(currentActivity.getName() + ": " + this.getCurrentDateAsString());
 		fieldTitle.setValue("");
 
 		editMode = true;
@@ -185,7 +192,6 @@ public class AttendanceLayout extends CssLayout {
     	//security
     	if(!CurrentUser.isUserInActivityWrite(currentActivity)) editMode = false;
 		
-		fieldDate.setEnabled(false);
 		fieldTitle.setEnabled(editMode);
 		titleLayout.setVisible(currentActivity.isCheckTitleRequired());
 		buttonSave.setVisible(editMode);
@@ -200,7 +206,7 @@ public class AttendanceLayout extends CssLayout {
 		if(editMode){
    			grid.setSelectionMode(SelectionMode.MULTI);
    			grid.asMultiSelect().addValueChangeListener(e -> {
-   		   		String today = DateUtils.isSameDay(Date.valueOf(fieldDate.getValue()), new Date(System.currentTimeMillis())) ? " HJ" : "";
+   		   		String today = DateUtils.isSameDay(Date.valueOf(currentDate), new Date(System.currentTimeMillis())) ? " HJ" : "";
    				buttonTotal.setCaption(grid.getSelectedItems().size()+today);
    			});
    		}else{
@@ -214,12 +220,12 @@ public class AttendanceLayout extends CssLayout {
 		
 		if(editMode){
 			//DB Persisted People
-			List<Attendance> attendances = attendanceRepository.findByDateAndActivity(Date.valueOf(fieldDate.getValue()), currentActivity);
+			List<Attendance> attendances = attendanceRepository.findByDateAndActivity(Date.valueOf(currentDate), currentActivity);
 
 			//DB Suggestions People
 			List<Person> people = activityAttendanceRepository.findByLastAttendances(currentActivity);
 			for (Person person : people) {
-				Attendance attendance = new Attendance(currentActivity, person, Date.valueOf(fieldDate.getValue()));
+				Attendance attendance = new Attendance(currentActivity, person, Date.valueOf(currentDate));
 				if(!attendances.contains(attendance)){
 					Person personDB = personRepository.findOne(person.getId());
 					attendance.setPerson(personDB);
@@ -234,7 +240,7 @@ public class AttendanceLayout extends CssLayout {
 			fieldTitle.setValue(title == null ? "" : title);
 		} else{
 			//DB Persisted People
-			List<Attendance> attendances = attendanceRepository.findByDateAndActivity(Date.valueOf(fieldDate.getValue()), currentActivity);
+			List<Attendance> attendances = attendanceRepository.findByDateAndActivity(Date.valueOf(currentDate), currentActivity);
 			gridList = attendances;
 			
 			//Set Title
@@ -254,7 +260,7 @@ public class AttendanceLayout extends CssLayout {
 		}
 
 		//Update or Add new Person on gridList
-		Attendance newAttendance = new Attendance(currentActivity, person, Date.valueOf(fieldDate.getValue()));
+		Attendance newAttendance = new Attendance(currentActivity, person, Date.valueOf(currentDate));
 		newAttendance.setPresent(true);
 
 		if(gridList.contains(newAttendance)){
@@ -282,7 +288,7 @@ public class AttendanceLayout extends CssLayout {
 				total++;
 			}
 		}
-   		String today = DateUtils.isSameDay(Date.valueOf(fieldDate.getValue()), new Date(System.currentTimeMillis())) ? " HJ" : "";
+   		String today = DateUtils.isSameDay(Date.valueOf(currentDate), new Date(System.currentTimeMillis())) ? " HJ" : "";
 		buttonTotal.setCaption(total+today);
 		grid.sort("name");
 	}
@@ -304,7 +310,7 @@ public class AttendanceLayout extends CssLayout {
 				fieldNewDate.focus();
 				return false;
 			}
-			if(!fieldNewDate.getValue().equals(fieldDate.getValue()) ){
+			if(!fieldNewDate.getValue().equals(currentDate) ){
 				List<Attendance> newDateList = attendanceRepository.findByDateAndActivity(Date.valueOf(fieldNewDate.getValue()), currentActivity);
 				if(!newDateList.isEmpty()){
 					new Notification(null, "Alteração não permitida, pois a atividade já tem " + newDateList.size() + " presenças na nova data." , Notification.Type.ERROR_MESSAGE, true).show(Page.getCurrent());
@@ -315,21 +321,22 @@ public class AttendanceLayout extends CssLayout {
 		}
 			
 		//Remove all first
-		List<Attendance> savedList = attendanceRepository.findByDateAndActivity(Date.valueOf(fieldDate.getValue()), currentActivity);
+		List<Attendance> savedList = attendanceRepository.findByDateAndActivity(Date.valueOf(currentDate), currentActivity);
 		for (Attendance a : savedList) {
 			attendanceRepository.delete(a);
 		}
 	
 		//Change date logic
 		if(newDateLayout.isVisible()){
-			fieldDate.setValue(fieldNewDate.getValue());
+			currentDate = fieldNewDate.getValue();
+			labelActivity.setValue(currentActivity.getName() + ": " + this.getCurrentDateAsString());
 		}
 			
 		//Insert all selected, if not exists
 		for (Attendance a : grid.getSelectedItems()) {
 
 			a.setId(null);
-			a.setDate(Date.valueOf(fieldDate.getValue()));
+			a.setDate(Date.valueOf(currentDate));
 			a.setTitle(StringUtils.isBlank(fieldTitle.getValue()) ? null : fieldTitle.getValue());
 			a.setLastEditTime(new Timestamp(System.currentTimeMillis()));
 			a.setLastEditUser(CurrentUser.getUser());
@@ -354,9 +361,19 @@ public class AttendanceLayout extends CssLayout {
 	}
 	
     void selectAttendanceActivity(LocalDate selectedDate, String title) {
-		fieldDate.setValue(selectedDate);
+    	currentDate = selectedDate;
+		labelActivity.setValue(currentActivity.getName() + ": " + this.getCurrentDateAsString());
 		fieldTitle.setValue(title == null ? "" : title);
 		editMode = false;
     	this.refreshEditModeComponents();
+    }
+    
+    private String getCurrentDateAsString(){
+    	if (this.currentDate == null)
+   			return "";
+
+    	DateTimeFormatter formatters = DateTimeFormatter.ofPattern("dd/MM/yyyy (EEE)");
+    	String str = currentDate.format(formatters);
+    	return str;
     }
 }

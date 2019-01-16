@@ -8,6 +8,8 @@
 
 4. Demora um pouco... 
 
+5. Se terminar com sucesso, pode pular para o passo "c) No Navegador"
+
 
 b) No Servidor (Digital Ocean)
 
@@ -33,16 +35,19 @@ b) No Servidor (Digital Ocean)
   exit
   exit
 
-8.Verificar NOVAMENTE se a Aplicação está no ar com a versão atualizada (fazer login)
+
+c) No Navegador
+
+1. Verificar se a Aplicação está no ar com a versão atualizada (fazer login)
   esplanada.org.br/att
 
 
-c) No Git Shell
+d) No Git Shell
 
 cd\
 cd GitHub\attendance
 
 git add .
-git commit -m "Version 2.3.2-RC-01"
+git commit -m "Version 2.5.1-RC-01"
 git push origin master
 exit

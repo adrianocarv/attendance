@@ -69,15 +69,14 @@ public class Activity {
 		long diff = System.currentTimeMillis() - lastAttendanceDate.getTime();
 		long days = diff / (24 * 60 * 60 * 1000);
 
-		if(days == 0)
+		if (days == 0)
 			return display += "HOJE";
-		
-		if(days == 1)
+		else if (days == 1)
 			return display += "Ontem";
-
-		display += days + "d";
-		
-		return display;
+		else if (days > 30)
+			return display;
+		else
+			return display += days + "d";
 	}
 
 	//accessors

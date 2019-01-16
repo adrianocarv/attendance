@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 import com.attendance.backend.model.User;
 import com.attendance.backend.repository.UserRepository;
-import com.attendance.backend.util.EmailService;
+import com.attendance.backend.util.AttendanceEmailService;
 import com.attendance.ui.authentication.CurrentUser;
 import com.attendance.ui.util.NotificationUtil;
 import com.vaadin.icons.VaadinIcons;
@@ -35,7 +35,7 @@ public class AboutView extends VerticalLayout implements View {
 	/** Dependences */
 	@Value("${build.version}") private String buildVersion;
 	@Value("${build.timestamp}") private String buildTimestamp;
-    @Autowired private EmailService emailService;
+    @Autowired private AttendanceEmailService attendanceEmailService;
     @Autowired private UserRepository userRepository;
 
     /** Components */
@@ -108,7 +108,7 @@ public class AboutView extends VerticalLayout implements View {
 	private void sendEmailVerification(){
 
 		//Send mail
-		String accessToken = emailService.sendEmailVerification(CurrentUser.getUser());
+		String accessToken = attendanceEmailService.sendEmailVerification(CurrentUser.getUser());
 		if(accessToken == null) return;
 		CurrentUser.getUser().setAccessToken(accessToken);
 		userRepository.save(CurrentUser.getUser());

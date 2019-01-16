@@ -1,4 +1,34 @@
 ********************
+Version 2.5.1-RC-01:
+
+Fixes:
+	- Arrumar problema com envio de e-mails (está, por exemplo, impedindo o registro de novos usuários)
+
+Features:
+
+	- Presenças: data como label (um objeto data para dar suporte...): Atividade: dd/mm/aaaa (sss)
+	- Presenças: mais de 30 dias, não mostra mais o nr de dias
+	- Lista de atividades: mostrar id do resumo de sr
+
+********************
+Version 2.5.0-RC-01:
+
+Fixes:
+
+Features:
+
+	- Migração do serviço de e-mail para o SendGrid
+
+********************
+Version 2.4.2-RC-01:
+
+Fixes:
+
+Features:
+
+	- Esqueceu a senha envia e-mail ao clicar
+
+********************
 Version 2.4.1-RC-01:
 
 Fixes:

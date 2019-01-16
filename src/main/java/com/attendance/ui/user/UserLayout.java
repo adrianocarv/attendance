@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.attendance.backend.model.User;
 import com.attendance.backend.model.UserStatus;
 import com.attendance.backend.repository.UserRepository;
-import com.attendance.backend.util.EmailService;
+import com.attendance.backend.util.AttendanceEmailService;
 import com.attendance.ui.authentication.CurrentUser;
 import com.attendance.ui.util.NotificationUtil;
 import com.vaadin.data.BeanValidationBinder;
@@ -33,7 +33,7 @@ public class UserLayout extends CssLayout {
 
     /** Dependences */
 	@Autowired private UserRepository userRepository;
-    @Autowired private EmailService emailService;
+    @Autowired private AttendanceEmailService attendanceEmailService;
 
     /** Components */
     private Label id = new Label("id");
@@ -168,7 +168,7 @@ public class UserLayout extends CssLayout {
     		current.setStatus(UserStatus.CHANGED_MAIL);
 
     		//Send mail
-    		String accessToken = emailService.sendEmailVerification(current);
+    		String accessToken = attendanceEmailService.sendEmailVerification(current);
     		if(accessToken == null) return false;
 
     		current.setAccessToken(accessToken);

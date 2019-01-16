@@ -34,7 +34,7 @@ public class LoginScreen extends CssLayout {
 
 	private static final long serialVersionUID = 1L;
 
-	private final String ABA_LOGIN = "Acessar conta";
+    private final String ABA_LOGIN = "Acessar conta";
 	private final String ABA_REGISTER = "Registrar";
 
 	private String buildVersion;
@@ -150,7 +150,8 @@ public class LoginScreen extends CssLayout {
         	private static final long serialVersionUID = 1L;
             @Override
             public void buttonClick(Button.ClickEvent event) {
-            	NotificationUtil.show(new Notification("Hint: Try anything"));
+            	NotificationUtil.show(new Notification("Este recurso estará disponível em breve!"));
+        		//String accessToken = accessControl.getAttendanceEmailService().sendEmailVerification(new User("adrianocarv@gmail.com"));
             }
         });
         forgotPassword.addStyleName(ValoTheme.BUTTON_LINK);
