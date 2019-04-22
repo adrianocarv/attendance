@@ -59,6 +59,7 @@ public class AttendanceLayout extends CssLayout {
 	private Button buttonEdit = new Button(VaadinIcons.EDIT);
 	private Button buttonNewPerson = new Button(VaadinIcons.PLUS_CIRCLE);
 	private Button buttonChangeDate = new Button(VaadinIcons.CALENDAR);
+	private Button buttonNewAttendance = new Button(VaadinIcons.CHECK_SQUARE_O);
 	private Button buttonBack = new Button(VaadinIcons.ARROW_BACKWARD);
 	private Button buttonEvents = new Button(VaadinIcons.USER_CHECK);
 	private Grid<Attendance> grid = new Grid<>(Attendance.class);
@@ -89,7 +90,7 @@ public class AttendanceLayout extends CssLayout {
         addStyleName("crud-view");
 
     	HorizontalLayout titleAndDate = new HorizontalLayout(labelActivity);
-    	HorizontalLayout actions = new HorizontalLayout(buttonTotal, buttonSave, buttonEdit, buttonNewPerson, buttonChangeDate, buttonBack, buttonEvents);
+    	HorizontalLayout actions = new HorizontalLayout(buttonTotal, buttonSave, buttonEdit, buttonNewPerson, buttonChangeDate, buttonNewAttendance, buttonBack, buttonEvents);
     	VerticalLayout layoutTop = new VerticalLayout(titleAndDate, newDateLayout, titleLayout, actions);
     	VerticalLayout layoutTopAndGrig = new VerticalLayout(layoutTop, grid);
 
@@ -120,19 +121,7 @@ public class AttendanceLayout extends CssLayout {
 		buttonBack.setStyleName("cancel");
 		buttonTotal.setStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
 
-		/*
-		buttonEvents.setDescription("Histórico de presenças na atividade");
-		buttonSave.setDescription("Salvar a lista de presenças");
-		buttonEdit.setDescription("Editar presenças");
-		buttonNewPerson.setDescription("Acrescentar mais pessoas na lista");
-		buttonChangeDate.setDescription("Alterar a data da atividade");
-		buttonBack.setDescription("Voltar para a lista de atividades");
-		buttonTotal.setDescription("Total de presentes (HJ = atividade na data de hoje)");
-		*/
-		
 		grid.setSizeFull();
-		//grid.setColumns("name");
-		//grid.getColumn("name").setCaption("Nome").setResizable(false).setSortable(false);
 		grid.removeAllColumns();
 		grid.addColumn("name", new HtmlRenderer()).setCaption("Nome").setResizable(false).setSortable(false);
 	}
@@ -162,13 +151,15 @@ public class AttendanceLayout extends CssLayout {
 			fieldNewDate.focus();
 		});
 
-//		fieldNewDate.addValueChangeListener(e -> {
-//			currentDate = fieldNewDate.getValue();
-//			labelActivity.setValue(currentActivity.getName() + ": " + this.getCurrentDateAsString());
-//		});
-
 		buttonBack.addClickListener(e -> parentView.enter(null));
-		
+
+		buttonNewAttendance.addClickListener(e -> {
+			this.enter(this.parentView, this.currentActivity);
+			newDateLayout.setVisible(true);
+			buttonChangeDate.setVisible(false);
+			fieldNewDate.setValue(currentDate);
+			fieldNewDate.focus();
+		});
 	}
 
 	public void enter(AttendanceView parentView, Activity a) {
@@ -198,6 +189,8 @@ public class AttendanceLayout extends CssLayout {
    		buttonEdit.setVisible(!editMode);
    		buttonNewPerson.setVisible(editMode);
    		buttonChangeDate.setVisible(editMode);
+   		buttonNewAttendance.setVisible(!editMode);
+   		buttonBack.setVisible(!editMode);
 		
 		//reset change date elements
    		newDateLayout.setVisible(false);

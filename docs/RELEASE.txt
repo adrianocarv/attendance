@@ -1,4 +1,15 @@
 ********************
+Version 2.5.3-RC-01:
+
+Fixes:
+
+Features:
+
+	- Presenças: Até 5 botões na toolbar, reposicionamento
+	- Presenças: Novo botão para adicionar novas presenças
+
+
+********************
 Version 2.5.1-RC-01:
 
 Fixes:
