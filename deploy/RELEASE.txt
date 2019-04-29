@@ -1,5 +1,16 @@
 ********************
-Version 2.5.4-RC-01:
+Version 2.5.5-RC-01
+
+Fixes:
+
+Features:
+
+	- Presenças: Total de presenças na descrição da atividade, não mais como botão
+	- Presenças: Botão voltar sempre visível
+
+
+********************
+Version 2.5.4-RC-01
 
 Fixes:
 
@@ -7,8 +18,9 @@ Features:
 
 	- Melhoria e automatização dos *.launch para execução e deploy
 
+
 ********************
-Version 2.5.3-RC-01:
+Version 2.5.3-RC-01
 
 Fixes:
 
@@ -17,8 +29,9 @@ Features:
 	- Presenças: Até 5 botões na toolbar, reposicionamento
 	- Presenças: Novo botão para adicionar novas presenças
 
+
 ********************
-Version 2.5.1-RC-01:
+Version 2.5.1-RC-01
 
 Fixes:
 	- Arrumar problema com envio de e-mails (está, por exemplo, impedindo o registro de novos usuários)
@@ -29,8 +42,9 @@ Features:
 	- Presenças: mais de 30 dias, não mostra mais o nr de dias
 	- Lista de atividades: mostrar id do resumo de sr
 
+
 ********************
-Version 2.5.0-RC-01:
+Version 2.5.0-RC-01
 
 Fixes:
 
@@ -38,8 +52,9 @@ Features:
 
 	- Migração do serviço de e-mail para o SendGrid
 
+
 ********************
-Version 2.4.2-RC-01:
+Version 2.4.2-RC-01
 
 Fixes:
 
@@ -47,8 +62,9 @@ Features:
 
 	- Esqueceu a senha envia e-mail ao clicar
 
+
 ********************
-Version 2.4.1-RC-01:
+Version 2.4.1-RC-01
 
 Fixes:
 
@@ -60,7 +76,7 @@ Features:
 
 
 ********************
-Version 2.4.0-RC-01:
+Version 2.4.0-RC-01
 
 Fixes:
 
@@ -73,7 +89,7 @@ Features:
 
 
 ********************
-Version 2.3.2-RC-01:
+Version 2.3.2-RC-01
 
 Fixes:
 
@@ -85,7 +101,7 @@ Features:
 
 
 ********************
-Version 2.3.1-RC-01:
+Version 2.3.1-RC-01
 
 Fixes:
 
@@ -96,7 +112,7 @@ Features:
 
 
 ********************
-Version 2.3.0-RC-01:
+Version 2.3.0-RC-01
 
 Fixes:
 
@@ -111,7 +127,7 @@ Features:
 
 
 ********************
-Version 2.2.1-RC-01:
+Version 2.2.1-RC-01
 
 Fixes:
 
@@ -130,7 +146,7 @@ Features:
  
 
 ********************
-Version 2.2.0-RC-01:
+Version 2.2.0-RC-01
 
 Fixes:
 
@@ -142,7 +158,7 @@ Features:
 
 
 ********************
-Version 2.1.1-RC-01:
+Version 2.1.1-RC-01
 
 Fixes:
 
@@ -152,7 +168,7 @@ Features:
 
 
 ********************
-Version 2.1.0-RC-01:
+Version 2.1.0-RC-01
 
 Fixes:
 
@@ -163,7 +179,7 @@ Features:
 
 
 ********************
-Version 2.0.0-RC-01:
+Version 2.0.0-RC-01
 
 Fixes:
 
@@ -174,7 +190,7 @@ Features:
 
 
 ********************
-Version 1.2.0-RC-01:
+Version 1.2.0-RC-01
 
 Fixes:
 
@@ -192,7 +208,7 @@ Features:
 
 
 ********************
-Version 1.1.1-RC-01:
+Version 1.1.1-RC-01
 
 Fixes:
 
@@ -202,7 +218,7 @@ Features:
 
 
 ********************
-Version 1.1.0-RC-01:
+Version 1.1.0-RC-01
 
 Fixes:
 
