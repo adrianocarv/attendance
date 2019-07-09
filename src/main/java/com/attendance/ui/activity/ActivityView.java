@@ -67,9 +67,10 @@ public class ActivityView extends CssLayout implements View {
         buttonNew.addStyleName(ValoTheme.BUTTON_PRIMARY);
 		
 		grid.setSizeFull();
-		grid.setColumns("name","resumoMensalId");
+		grid.setColumns("name", "resumoMensalId", "nameComplement");
 		grid.getColumn("name").setCaption("Atividades").setResizable(false).setSortable(true);
 		grid.getColumn("resumoMensalId").setCaption("Resumo").setResizable(true).setSortable(true);
+		grid.getColumn("nameComplement").setCaption("Complemento").setResizable(true).setSortable(true);
 		grid.sort("name");
 		grid.setSelectionMode(SelectionMode.SINGLE);
 	}

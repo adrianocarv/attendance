@@ -57,6 +57,8 @@ public class AttendanceLayout extends CssLayout {
 
 	/** Components */
 	private Label labelActivity = new Label("", ContentMode.HTML);
+	private Label labelUser = new Label("", ContentMode.HTML);
+	private Button buttonShowUser = new Button(VaadinIcons.USER);
 	private DateField fieldNewDate = new DateField();
 	private TextField fieldTitle = new TextField();
 	private Button buttonSave = new Button(VaadinIcons.CHECK);
@@ -93,11 +95,11 @@ public class AttendanceLayout extends CssLayout {
 		setSizeFull();
 		addStyleName("crud-view");
 
-		HorizontalLayout titleAndDate = new HorizontalLayout(labelActivity);
+		HorizontalLayout titleAndDate = new HorizontalLayout(labelActivity, buttonShowUser);
 		HorizontalLayout actions = new HorizontalLayout(buttonSave, buttonEdit, buttonNewPerson, buttonChangeDate, buttonNewAttendance, buttonBack, buttonEvents);
-		VerticalLayout layoutTop = new VerticalLayout(titleAndDate, newDateLayout, titleLayout, actions);
+		VerticalLayout layoutTop = new VerticalLayout(titleAndDate, labelUser, newDateLayout, titleLayout, actions);
 		VerticalLayout layoutTopAndGrig = new VerticalLayout(layoutTop, grid);
-
+		
 		actions.setSpacing(true);
 
 		layoutTop.setWidth("100%");
@@ -118,6 +120,10 @@ public class AttendanceLayout extends CssLayout {
 		labelActivity.setStyleName(ValoTheme.LABEL_BOLD);
 		fieldTitle.setPlaceholder("Título requerido");
 
+		labelUser.setVisible(false);
+		
+		buttonShowUser.setStyleName(ValoTheme.BUTTON_BORDERLESS);
+		
 		buttonEvents.setStyleName(ValoTheme.BUTTON_BORDERLESS_COLORED);
 		buttonSave.setStyleName(ValoTheme.BUTTON_FRIENDLY);
 		buttonEdit.setStyleName(ValoTheme.BUTTON_PRIMARY);
@@ -130,6 +136,8 @@ public class AttendanceLayout extends CssLayout {
 	}
 
 	private void hookLogicToComponents() {
+
+		buttonShowUser.addClickListener(e -> labelUser.setVisible(!labelUser.isVisible()));
 
 		buttonEvents.addClickListener(e -> attendanceActivityLayout.enter(this));
 
@@ -291,6 +299,10 @@ public class AttendanceLayout extends CssLayout {
 		}
 		labelActivity.setValue(this.getActivityTitle(total));
 		grid.sort("name");
+		
+		//username
+		String username = (total > 0 && grid.getSelectedItems().iterator().next().getLastEditUser() != null) ? grid.getSelectedItems().iterator().next().getLastEditUser().getUsername() : CurrentUser.getUser().getUsername();
+		labelUser.setValue(username);
 	}
 
 	private boolean persistAttendance() {
