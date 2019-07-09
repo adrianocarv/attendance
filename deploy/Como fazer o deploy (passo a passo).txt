@@ -4,7 +4,7 @@
 
 2. Atualizar pom.xml na tag <version> com o número da versão nova 
 
-3. Run -> Run Configurations... -> Executar "Attendance - install" 
+3. Run -> Run Configurations... -> Executar "Run Maven. Attendance - install.launch" 
 
 4. Demora um pouco... 
 
