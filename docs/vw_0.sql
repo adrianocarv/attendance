@@ -26,7 +26,7 @@ select  t.id attendance_id
        ,p.status
        ,p.tag1
        ,p.tag2
-       ,p.tag3
+       ,p.tag3spo
        ,p.tag4
        ,if(p.check_contribui = 1, '1','0') check_contribui
        ,p.check_contribui_value
