@@ -17,6 +17,7 @@ select  t.id attendance_id
        ,a.name_complement activity_name_complement
        ,a.resumo_mensal_id
        ,p.name
+       ,CASE WHEN p.birthday is null THEN p.name ELSE CONCAT(p.name," (",YEAR(CURDATE()) - YEAR(p.birthday), ")") END name_age
        ,p.short_name
        ,p.birthday
        ,p.phone
@@ -26,7 +27,7 @@ select  t.id attendance_id
        ,p.status
        ,p.tag1
        ,p.tag2
-       ,p.tag3spo
+       ,p.tag3
        ,p.tag4
        ,if(p.check_contribui = 1, '1','0') check_contribui
        ,p.check_contribui_value
@@ -206,6 +207,7 @@ CREATE view vw_person as
 select  p.id
        ,p.center_id
        ,p.name
+       ,CASE WHEN p.birthday is null THEN p.name ELSE CONCAT(p.name," (",YEAR(CURDATE()) - YEAR(p.birthday), ")") END name_age
        ,p.short_name
        ,p.birthday
        ,p.phone

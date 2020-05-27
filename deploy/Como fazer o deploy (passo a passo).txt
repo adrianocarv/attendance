@@ -15,10 +15,10 @@ b) No Servidor (Digital Ocean)
 
 1. Abrir o PuTTY Portable (D:\Dropbox\Programas 2\@portable\PuTTYPortable\PuTTYPortable.exe)
 
-2. Abrir a sessão 'droplet - producao'
+2. Abrir a sessão 'droplet - producao4'
 
 3. Logar com user
-  adrianocarv / pass: a mesma
+  adrianocarv / pass: @a<mesma>
 
 4. Trabalha como super user
   su
